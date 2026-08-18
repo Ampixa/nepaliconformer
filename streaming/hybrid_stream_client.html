@@ -1,0 +1,161 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>W4 hybrid streaming ASR</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+         margin: 0; padding: 24px; max-width: 940px; }
+  h1 { font-size: 19px; margin: 0 0 4px; }
+  .sub { opacity: .65; font-size: 13px; margin-bottom: 18px; }
+  button { font: inherit; padding: 9px 18px; border-radius: 8px; border: 1px solid currentColor;
+           background: transparent; cursor: pointer; margin-right: 8px; }
+  button[disabled] { opacity: .4; cursor: default; }
+  .lane { margin-top: 16px; }
+  .lane h2 { font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+             opacity: .55; margin: 0 0 6px; }
+  #partial { padding: 14px; min-height: 58px; border-radius: 10px; font-size: 19px;
+             border: 1px dashed rgba(128,128,128,.5); white-space: pre-wrap;
+             word-break: break-word; opacity: .85; }
+  #finals { padding: 4px 0; }
+  .final { padding: 12px 14px; margin-bottom: 8px; border-radius: 10px; font-size: 19px;
+           border: 1px solid rgba(90,170,90,.55); background: rgba(90,170,90,.10);
+           white-space: pre-wrap; word-break: break-word; }
+  .final .meta { display: block; margin-top: 6px; font-size: 11px; opacity: .65;
+                 font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .was { opacity: .55; text-decoration: line-through; }
+  .breath { background: rgba(220,120,0,.3); border-radius: 4px; padding: 0 3px; }
+  #stats { margin-top: 10px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+           font-size: 12px; opacity: .7; }
+  #warn { margin-top: 14px; padding: 10px 12px; border-radius: 8px; font-size: 13px;
+          background: rgba(220,60,60,.14); display: none; }
+  details { margin-top: 22px; font-size: 13px; opacity: .8; }
+  pre { overflow-x: auto; font-size: 12px; }
+</style>
+
+<h1>W4 hybrid streaming ASR</h1>
+<div class="sub">Pass 1 streams cache-aware partials every 500 ms. Pass 2 re-decodes each closed
+turn at full context and replaces the partial. Stop speaking for a second to see the correction.</div>
+
+<button id="go">Start listening</button>
+<button id="stop" disabled>Stop</button>
+
+<div id="warn"></div>
+
+<div class="lane">
+  <h2>Live partial — pass 1</h2>
+  <div id="partial"></div>
+  <div id="stats"></div>
+</div>
+
+<div class="lane">
+  <h2>Finalised turns — pass 2</h2>
+  <div id="finals"></div>
+</div>
+
+<details>
+  <summary>What is being served, and what to distrust</summary>
+  <pre id="model">loading…</pre>
+  <p>Partials use a 500 ms chunk with 500 ms of left context. Without that overlap the partials
+  lose most of the utterance — measured, not assumed.</p>
+  <p><b>Turn ends are energy VAD, not the model.</b> The <span class="breath">⏎</span> end-of-turn
+  token is not usable in this checkpoint: recall 0.0045, and no bias setting reaches precision
+  above 0.576. It is highlighted if it ever appears.</p>
+</details>
+
+<script>
+const partialEl = document.getElementById('partial'), finalsEl = document.getElementById('finals');
+const statsEl = document.getElementById('stats'), warn = document.getElementById('warn');
+const goBtn = document.getElementById('go'), stopBtn = document.getElementById('stop');
+let ctx, node, src, ws, stream;
+
+fetch('/model').then(r => r.text()).then(t => document.getElementById('model').textContent = t)
+               .catch(() => {});
+
+function showWarn(m) { warn.textContent = m; warn.style.display = 'block'; }
+
+function paint(el, text) {
+  el.innerHTML = '';
+  for (const tok of (text || '').split(/(<breath>)/)) {
+    if (!tok) continue;
+    if (tok === '<breath>') {
+      const s = document.createElement('span');
+      s.className = 'breath'; s.textContent = '⏎'; el.appendChild(s);
+    } else el.appendChild(document.createTextNode(tok));
+  }
+}
+
+function addFinal(m) {
+  const d = document.createElement('div');
+  d.className = 'final';
+  const t = document.createElement('div');
+  paint(t, m.text); d.appendChild(t);
+  const meta = document.createElement('span');
+  meta.className = 'meta';
+  const changed = (m.partial || '') !== (m.text || '');
+  meta.textContent = `turn ${m.turn_s}s · finalized in ${m.finalize_ms} ms`
+                   + (changed ? ` · revised from: "${(m.partial || '').slice(0, 70)}"` : ' · unchanged');
+  d.appendChild(meta);
+  finalsEl.prepend(d);
+  paint(partialEl, '');
+}
+
+goBtn.onclick = async () => {
+  if (!window.isSecureContext) {
+    showWarn('Not a secure context, so the browser will refuse the microphone. Open over HTTPS.');
+    return;
+  }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio: { channelCount: 1, echoCancellation: true, noiseSuppression: false,
+               autoGainControl: true }
+    });
+  } catch (e) { showWarn('Microphone denied: ' + e.name + ' — ' + e.message); return; }
+
+  goBtn.disabled = true; stopBtn.disabled = false; warn.style.display = 'none';
+  paint(partialEl, ''); finalsEl.innerHTML = '';
+
+  ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws');
+  ws.binaryType = 'arraybuffer';
+  ws.onmessage = ev => {
+    const m = JSON.parse(ev.data);
+    if (m.type === 'final') addFinal(m);
+    else {
+      paint(partialEl, m.text);
+      statsEl.textContent = `chunk ${m.chunk} · ${m.ms} ms compute · rms ${m.rms}`
+                          + ` · <breath> x${m.eou}`;
+    }
+  };
+  ws.onerror = () => showWarn('WebSocket error — is the server running?');
+
+  // Ask the browser for 16 kHz directly. Its own resampler is anti-aliased; a hand-rolled linear
+  // one is not, and feeding aliased audio to a mel front-end is not a small error.
+  ctx = new AudioContext({ sampleRate: 16000 });
+  src = ctx.createMediaStreamSource(stream);
+  node = ctx.createScriptProcessor(4096, 1, 1);
+  node.onaudioprocess = e => {
+    if (!ws || ws.readyState !== 1) return;
+    const inBuf = e.inputBuffer.getChannelData(0);
+    let pcm;
+    if (ctx.sampleRate === 16000) pcm = new Float32Array(inBuf);
+    else {                                   // fallback if the browser ignored the request
+      const ratio = ctx.sampleRate / 16000, n = Math.round(inBuf.length / ratio);
+      pcm = new Float32Array(n);
+      for (let i = 0; i < n; i++) {
+        const pos = i * ratio, lo = Math.floor(pos), hi = Math.min(lo + 1, inBuf.length - 1);
+        pcm[i] = inBuf[lo] + (inBuf[hi] - inBuf[lo]) * (pos - lo);
+      }
+    }
+    ws.send(pcm.buffer);
+  };
+  src.connect(node); node.connect(ctx.destination);
+};
+
+stopBtn.onclick = () => {
+  stopBtn.disabled = true; goBtn.disabled = false;
+  if (node) node.disconnect();
+  if (src) src.disconnect();
+  if (ctx) ctx.close();
+  if (stream) stream.getTracks().forEach(t => t.stop());
+  if (ws) ws.close();
+};
+</script>
