@@ -26,6 +26,10 @@ number can be re-derived, and a limitations section that names every measured ho
 | `nepali-conformer-offline` | 121.3 M | full-context | **33.8** | [ampixa/nepali-conformer-offline](https://huggingface.co/ampixa/nepali-conformer-offline) |
 | `nepali-conformer-streaming` | 121.3 M | cache-aware, 520 ms lookahead | 59.9 | [ampixa/nepali-conformer-streaming](https://huggingface.co/ampixa/nepali-conformer-streaming) |
 
+**On real Nepali call audio, this is the strongest model we have measured — open or otherwise-zero-shot:**
+ours **33.8** · Kriti 40.6 · MMS-1B 81.0 · Whisper-large-v3 99.4 (same audio, same scorer,
+per-system outputs in `benchmark/outputs/`; one gated model still pending access).
+
 †NepTel benchmark: 75 segments / 2,375 words of real Nepali call-center audio, references drafted
 by Google Chirp 2 and reviewed word-by-segment by a native speaker. See `benchmark/` and
 [RESULTS.md](RESULTS.md) for the full table, confidence intervals, and every caveat.
