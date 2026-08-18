@@ -22,6 +22,8 @@ every number can be re-derived, and a limitations section that names every measu
 
 ## NepTel benchmark — how everything compares
 
+*NepTel is our benchmark; that authorship, and everything about how it was built, is documented in [`benchmark/PROVENANCE.md`](benchmark/PROVENANCE.md).*
+
 NepTel is our benchmark of **real, spontaneous Nepali** (genuine call-center conversations —
 the hardest real-world audio there is): 75 segments / 2,375 words with human-reviewed
 references. Same audio, same scorer, per-system outputs in
@@ -58,7 +60,7 @@ is what survives.
 | `nepali-conformer-offline` | 121.3 M | full-context | **33.8** | [ampixa/nepali-conformer-offline](https://huggingface.co/ampixa/nepali-conformer-offline) |
 | `nepali-conformer-streaming` | 121.3 M | cache-aware, 520 ms lookahead | 59.9 | [ampixa/nepali-conformer-streaming](https://huggingface.co/ampixa/nepali-conformer-streaming) |
 
-**On real Nepali call audio, this is the strongest model we have measured — open or otherwise-zero-shot:**
+**On the NepTel benchmark (constructed and maintained by us — full provenance in [`benchmark/PROVENANCE.md`](benchmark/PROVENANCE.md)), this is the strongest system we have measured:**
 ours **33.8** · Kriti 40.6 · MMS-1B 81.0 · Whisper-large-v3 99.4 (same audio, same scorer,
 per-system outputs in `benchmark/outputs/`; one gated model still pending access).
 

@@ -1,0 +1,51 @@
+{
+ "benchmark": "NepTel",
+ "version": "0.1",
+ "authors": "NepaliConformer team (conflict of interest declared: benchmark authors also field a system)",
+ "audio_source": {
+  "dataset": "InfoBayAI/Nepali_Call_Center_Audio_Dataset_Dual_Channel",
+  "license": "CC-BY-4.0",
+  "samples": [
+   "Sample - 01",
+   "Sample - 02",
+   "Sample - 03"
+  ],
+  "vendor_preprocessing": [
+   "noise reduction",
+   "low-activity removal",
+   "PII muting (digital zeros)"
+  ]
+ },
+ "references": {
+  "draft_engine": "google chirp_2 ne-NP",
+  "draft_dates": [
+   "2026-08-13",
+   "2026-08-18"
+  ],
+  "review": "native speaker, per-segment accept/correct/flag",
+  "batch1": {
+   "segments": 28,
+   "accepted": 27,
+   "rejected": 1
+  },
+  "batch2": {
+   "segments": 57,
+   "usable": 49,
+   "flagged": 8,
+   "word_corrections": 2,
+   "verbatim_acceptance": 0.959
+  },
+  "rate_gate_words_per_sec": 6.0
+ },
+ "final": {
+  "segments_scored": 75,
+  "reference_words": 2375
+ },
+ "scoring": "word Levenshtein on normalized text (digits->spoken words); paired bootstrap for deltas",
+ "canary": "NEPTEL-CANARY-2026-8f3a1c92",
+ "known_biases": [
+  "reviewed-draft references share Chirp lineage with our training labels",
+  "3 calls / 1 vendor / 1 domain; levels are mix-dependent",
+  "vendor-cleaned audio is easier than raw telephony"
+ ]
+}
