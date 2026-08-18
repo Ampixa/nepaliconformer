@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 320" role="img" aria-labelledby="title description">
+  <title id="title">NepaliConformer</title>
+  <desc id="description">Speech recognition for real Nepali telephone calls</desc>
+  <rect width="1280" height="320" fill="#0E1614"/>
+
+  <g fill="#17221F">
+    <path d="M0 269 130 195l75 45 128-104 92 82 120-115 95 106 116-85 98 91 142-125 204 179v51H0Z"/>
+    <path d="M0 300 168 231l102 48 142-71 117 59 147-86 117 72 146-66 114 63 127-49v119H0Z" opacity=".7"/>
+  </g>
+  <path d="M1010 0h270v10h-224l-46 31Z" fill="#DC143C"/>
+  <circle cx="1192" cy="75" r="6" fill="#DC143C"/>
+  <circle cx="1218" cy="75" r="6" fill="#1F2A36"/>
+  <circle cx="1244" cy="75" r="6" fill="#DC143C"/>
+
+  <g transform="translate(44 13) scale(.57)">
+    <g fill="#1F2A36">
+      <path d="M34 430 138 300l48 43 91-224 57 99 43-66 103 278Z"/>
+      <path d="m137 300 49 43 91-224 19 33-81 220-50-36Z" opacity=".94"/>
+    </g>
+    <g fill="#DC143C">
+      <rect x="264" y="72" width="42" height="14" rx="7"/>
+      <rect x="257" y="92" width="58" height="14" rx="7"/>
+      <rect x="249" y="112" width="76" height="14" rx="7"/>
+      <rect x="242" y="132" width="91" height="14" rx="7"/>
+      <rect x="234" y="152" width="108" height="14" rx="7"/>
+      <rect x="226" y="172" width="124" height="14" rx="7"/>
+      <rect x="219" y="192" width="139" height="14" rx="7"/>
+      <rect x="211" y="212" width="155" height="14" rx="7"/>
+      <rect x="204" y="232" width="169" height="14" rx="7"/>
+      <rect x="197" y="252" width="183" height="14" rx="7"/>
+      <rect x="190" y="272" width="196" height="14" rx="7"/>
+      <rect x="183" y="292" width="209" height="14" rx="7"/>
+      <rect x="176" y="312" width="221" height="14" rx="7"/>
+      <rect x="168" y="332" width="235" height="14" rx="7"/>
+      <rect x="160" y="352" width="249" height="14" rx="7"/>
+      <rect x="151" y="372" width="265" height="14" rx="7"/>
+      <rect x="141" y="392" width="282" height="14" rx="7"/>
+      <circle cx="285" cy="52" r="10"/>
+    </g>
+  </g>
+
+  <g font-family="Inter, Helvetica, Arial, sans-serif">
+    <text x="380" y="147" fill="#F5F7F6" font-size="68" font-weight="800">Nepali</text>
+    <text x="590" y="147" fill="#DC143C" font-size="68" font-weight="800">Conformer</text>
+    <text x="384" y="199" fill="#D6DFDC" font-size="25" font-weight="500" letter-spacing=".2">Speech recognition for real Nepali telephone calls</text>
+  </g>
+  <rect x="384" y="227" width="110" height="6" rx="3" fill="#DC143C"/>
+  <rect x="502" y="227" width="54" height="6" rx="3" fill="#1F2A36"/>
+</svg>

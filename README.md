@@ -1,13 +1,23 @@
-# Nepali Telephony ASR — research prototype
+<p align="center">
+  <img src="assets/hero.svg" alt="NepaliConformer — speech recognition for real Nepali telephone calls" width="100%">
+</p>
 
-Streaming and offline speech recognition for **spontaneous Nepali telephone speech**, released
-as a research prototype together with **NepTel**, a human-reviewed real-call benchmark, and the
-full, honest evaluation — including the numbers that are bad.
+# NepaliConformer
 
-**This is not a polished product.** It is a working system with measured strengths and measured
-holes, released so the numbers exist in public. Nepali telephony ASR currently has no public
-benchmark on real call audio; every published Nepali WER we know of is measured on read or
-prompted speech. The gap between those two worlds is the headline finding of this release.
+**Speech recognition that understands Nepali the way it is actually spoken — on the phone.**
+
+Roughly 33 million people speak Nepali, and almost none of the world's speech technology works
+for them once the audio comes from a real telephone: spontaneous speech, 8 kHz codecs, noise,
+code-switching. Systems that look excellent on read-aloud benchmarks collapse there — we
+measured Whisper-large-v3 at ~99% word error rate on real Nepali calls. This project exists to
+close that gap in the open: a Conformer backbone, Nepali at heart, built and evaluated on the
+audio people actually produce.
+
+**Try it in your browser:** [huggingface.co/spaces/voidash/nepaliconformer](https://huggingface.co/spaces/voidash/nepaliconformer)
+
+Released as a **research prototype** with, we believe, the most honest evaluation any Nepali ASR
+system has shipped with: a public real-call benchmark (**NepTel**), per-system outputs so every
+number can be re-derived, and a limitations section that names every measured hole.
 
 ## Models
 
