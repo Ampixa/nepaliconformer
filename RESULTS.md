@@ -16,9 +16,11 @@ reviewed against the audio by a native speaker (49/57 of the newest batch accept
 | **nepali-conformer-offline** (ours) | **33.81** | 16.63 | — | — | — |
 | teacher-v2 (ours, rejected lineage) | 34.69 | 17.75 | — | — | — |
 | **nepali-conformer-streaming** (ours, 520 ms) | 59.87 | 41.08 | 35.8* | 28.1* | 1.1* |
+| MMS-1B-all (Meta, `npi` adapter, zero-shot) | 81.01 | — | — | — | — |
 | Whisper-large-v3, zero-shot, anti-hallucination tuned | 99.41 | — | — | — | — |
 | Whisper-large-v3, zero-shot, defaults | 107.49 | — | — | — | — |
 | [Kriti](https://github.com/Naamche-Labs/kriti) (Naamche Labs, 119M, IndicConformer fine-tune) | 40.59 | — | — | — | — |
+| IndicWav2Vec-Nepali (AI4Bharat) | *pending — gated checkpoint, access requested* | | | | |
 
 *S/D/I split measured on the 26-segment first batch; full-set split reproducible from
 `benchmark/outputs/`.
