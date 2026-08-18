@@ -13,8 +13,8 @@ prompted speech. The gap between those two worlds is the headline finding of thi
 
 | model | params | mode | real-call WER† | HF checkpoint |
 |---|---|---|---|---|
-| `nepali-conformer-offline` | 121.3 M | full-context | **33.8** | [voidash/nepali-conformer-offline](https://huggingface.co/voidash/nepali-conformer-offline) |
-| `nepali-conformer-streaming` | 121.3 M | cache-aware, 520 ms lookahead | 59.9 | [voidash/nepali-conformer-streaming](https://huggingface.co/voidash/nepali-conformer-streaming) |
+| `nepali-conformer-offline` | 121.3 M | full-context | **33.8** | [voidash/nepali-conformer-offline](https://huggingface.co/ampixa/nepali-conformer-offline) |
+| `nepali-conformer-streaming` | 121.3 M | cache-aware, 520 ms lookahead | 59.9 | [voidash/nepali-conformer-streaming](https://huggingface.co/ampixa/nepali-conformer-streaming) |
 
 †NepTel benchmark: 75 segments / 2,375 words of real Nepali call-center audio, references drafted
 by Google Chirp 2 and reviewed word-by-segment by a native speaker. See `benchmark/` and
