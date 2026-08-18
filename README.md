@@ -117,9 +117,8 @@ RESULTS.md   every measurement, with instruments and caveats
 
 ## License
 
-Code: MIT. Model weights: CC-BY-NC-4.0 (training data includes crawled YouTube speech;
-non-commercial is the honest license for this lineage). NepTel reference transcripts: CC-BY-4.0.
-Benchmark audio: CC-BY-4.0, © InfoBayAI, redistributed with attribution.
+Code: MIT. Model weights: **CC-BY-NC**. NepTel references: CC-BY-4.0
+(audio © [InfoBayAI](https://huggingface.co/datasets/InfoBayAI/Nepali_Call_Center_Audio_Dataset_Dual_Channel), CC-BY-4.0).
 
 ## Citation
 
