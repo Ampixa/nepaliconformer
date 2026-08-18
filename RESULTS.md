@@ -18,13 +18,18 @@ reviewed against the audio by a native speaker (49/57 of the newest batch accept
 | **nepali-conformer-streaming** (ours, 520 ms) | 59.87 | 41.08 | 35.8* | 28.1* | 1.1* |
 | Whisper-large-v3, zero-shot, anti-hallucination tuned | 99.41 | — | — | — | — |
 | Whisper-large-v3, zero-shot, defaults | 107.49 | — | — | — | — |
-| Kriti (Naamche Labs) | *pending — their runtime pins a NeMo fork revision; being reproduced* | | | | |
+| [Kriti](https://github.com/Naamche-Labs/kriti) (Naamche Labs, 119M, IndicConformer fine-tune) | 40.59 | — | — | — | — |
 
 *S/D/I split measured on the 26-segment first batch; full-set split reproducible from
 `benchmark/outputs/`.
 
-Paired bootstrap deltas: teacher-v2 − offline = **+0.9 [−0.9, +2.8]** (statistical tie);
-streaming − offline = **+26.1 [+23.2, +29.2]**.
+Paired bootstrap deltas vs our offline model: Kriti **+6.8 [+3.8, +9.9]** (significant);
+teacher-v2 **+0.9 [−0.9, +2.8]** (statistical tie); streaming **+26.1 [+23.2, +29.2]**.
+
+*Kriti row methodology: their published checkpoint reduced to Nepali-only exactly as their
+own loader does (first-257 embedding rows, `ne` joint head, CTC head dropped — see their
+`src/kriti/model.py`), decoded greedily in mainline NeMo; weight surgery verified
+`missing=0 unexpected=0`. Their outputs: `benchmark/outputs/kriti-naamche.json`.*
 
 **Reference caveats, stated plainly:** references are Chirp-2-drafted and human-*reviewed*, not
 transcribed from scratch; our models trained on Chirp 2 pseudo-labels, so shared-error
