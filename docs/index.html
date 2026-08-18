@@ -158,6 +158,18 @@ we would love to be beaten.</p>
 
 <hr>
 
+<h2>Download &amp; run</h2>
+<p class="lead">Weights are a single 485&nbsp;MB file. CPU is enough.</p>
+<div class="quote" style="font-size:14px; overflow-x:auto; white-space:pre">pip install -U huggingface_hub "nemo_toolkit[asr]"
+hf download ampixa/nepali-conformer-offline nepali_conformer_offline.nemo --local-dir .
+python -c "from nemo.collections.asr.models import EncDecHybridRNNTCTCBPEModel as M; \
+  print(M.restore_from('nepali_conformer_offline.nemo').transcribe(['audio.wav'])[0].text)"</div>
+<p class="foot-note"><a href="https://huggingface.co/ampixa/nepali-conformer-offline">offline weights</a> ·
+<a href="https://huggingface.co/ampixa/nepali-conformer-streaming">streaming weights</a> ·
+<a href="https://github.com/Ampixa/nepaliconformer#download--run">full instructions</a></p>
+
+<hr>
+
 <h2>Try it — speak Nepali to it</h2>
 <p class="lead">Microphone or file, ≤60 s. Free CPU: a 30-second clip takes ten to twenty
 seconds.</p>

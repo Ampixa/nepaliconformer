@@ -75,13 +75,36 @@ telephony codecs (AMR-NB, G.711, G.726, Opus), noise, reverb, and tempo perturba
 streaming model uses chunked-limited attention (`[[70,13],[70,6],[70,1],[70,0]]`) with fully
 causal convolutions and runs in a cache-aware incremental loop.
 
-## Quickstart
+## Download & run
+
+**Get the weights** (485 MB, CC-BY-NC):
 
 ```bash
-pip install nemo_toolkit[asr]
-python asr/transcribe.py --nemo <checkpoint.nemo> audio.wav
-# streaming demo (WebSocket server + browser client):
-python streaming/hybrid_stream_server.py --nemo <streaming checkpoint>
+pip install -U huggingface_hub
+hf download ampixa/nepali-conformer-offline nepali_conformer_offline.nemo --local-dir .
+# streaming variant:
+hf download ampixa/nepali-conformer-streaming nepali_conformer_streaming.nemo --local-dir .
+```
+
+**Transcribe** (CPU is fine; ~0.3× real-time on a laptop):
+
+```bash
+pip install "nemo_toolkit[asr]"
+python asr/transcribe.py --nemo nepali_conformer_offline.nemo audio.wav
+```
+
+Or in Python:
+
+```python
+from nemo.collections.asr.models import EncDecHybridRNNTCTCBPEModel
+m = EncDecHybridRNNTCTCBPEModel.restore_from("nepali_conformer_offline.nemo")
+print(m.transcribe(["audio.wav"])[0].text)
+```
+
+**Streaming demo** (WebSocket server + browser client):
+
+```bash
+python streaming/hybrid_stream_server.py --nemo nepali_conformer_streaming.nemo
 ```
 
 ## The one-paragraph honest summary
