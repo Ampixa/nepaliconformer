@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 320" role="img" aria-labelledby="title description">
   <title id="title">NepaliConformer</title>
-  <desc id="description">Speech recognition for real Nepali telephone calls</desc>
+  <desc id="description">Speech recognition for Nepali, as it is actually spoken</desc>
   <rect width="1280" height="320" fill="#0E1614"/>
 
   <g fill="#17221F">
@@ -43,7 +43,7 @@
   <g font-family="Inter, Helvetica, Arial, sans-serif">
     <text x="380" y="147" fill="#F5F7F6" font-size="68" font-weight="800">Nepali</text>
     <text x="590" y="147" fill="#DC143C" font-size="68" font-weight="800">Conformer</text>
-    <text x="384" y="199" fill="#D6DFDC" font-size="25" font-weight="500" letter-spacing=".2">Speech recognition for real Nepali telephone calls</text>
+    <text x="384" y="199" fill="#D6DFDC" font-size="25" font-weight="500" letter-spacing=".2">Speech recognition for Nepali, as it is actually spoken</text>
   </g>
   <rect x="384" y="227" width="110" height="6" rx="3" fill="#DC143C"/>
   <rect x="502" y="227" width="54" height="6" rx="3" fill="#1F2A36"/>

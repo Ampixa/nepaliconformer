@@ -1,23 +1,44 @@
 <p align="center">
-  <img src="assets/hero.svg" alt="NepaliConformer — speech recognition for real Nepali telephone calls" width="100%">
+  <img src="assets/hero.svg" alt="NepaliConformer" width="100%">
 </p>
 
 # NepaliConformer
 
-**Speech recognition that understands Nepali the way it is actually spoken — on the phone.**
+**Speech recognition for Nepali as it is actually spoken.**
 
-Roughly 33 million people speak Nepali, and almost none of the world's speech technology works
-for them once the audio comes from a real telephone: spontaneous speech, 8 kHz codecs, noise,
-code-switching. Systems that look excellent on read-aloud benchmarks collapse there — we
-measured Whisper-large-v3 at ~99% word error rate on real Nepali calls. This project exists to
-close that gap in the open: a Conformer backbone, Nepali at heart, built and evaluated on the
-audio people actually produce.
+Roughly 33 million people speak Nepali, but speech technology for it has been built and measured
+almost entirely on read-aloud recordings. Real Nepali — conversation, spontaneous speech, noisy
+rooms, code-switching, and yes, phone lines — is a different language acoustically, and the
+systems that top read-speech benchmarks fall apart on it. NepaliConformer is trained on ~1,655
+hours of mostly *conversational* Nepali and evaluated on the hardest real-world condition we
+could obtain references for. Conformer as the backbone, Nepali at heart: we're bridging that gap
+in the open.
 
 **Try it in your browser:** [huggingface.co/spaces/voidash/nepaliconformer](https://huggingface.co/spaces/voidash/nepaliconformer)
 
 Released as a **research prototype** with, we believe, the most honest evaluation any Nepali ASR
-system has shipped with: a public real-call benchmark (**NepTel**), per-system outputs so every
-number can be re-derived, and a limitations section that names every measured hole.
+system has shipped with: a public real-speech benchmark (**NepTel**), per-system outputs so
+every number can be re-derived, and a limitations section that names every measured hole.
+
+## NepTel benchmark — how everything compares
+
+NepTel is our benchmark of **real, spontaneous Nepali** (genuine call-center conversations —
+the hardest real-world audio there is): 75 segments / 2,375 words with human-reviewed
+references. Same audio, same scorer, per-system outputs in
+[`benchmark/outputs/`](benchmark/outputs/):
+
+| system | params | WER ↓ |
+|---|---|---|
+| **NepaliConformer offline (ours)** | 121 M | **33.8** |
+| [Kriti](https://github.com/Naamche-Labs/kriti) (Naamche Labs, IndicConformer fine-tune) | 119 M | 40.6 |
+| **NepaliConformer streaming (ours, 520 ms)** | 121 M | 59.9 |
+| [MMS-1B-all](https://huggingface.co/facebook/mms-1b-all) (Meta, `npi`, zero-shot) | 965 M | 81.0 |
+| [Whisper-large-v3](https://huggingface.co/openai/whisper-large-v3) (zero-shot, anti-hallucination tuned) | 809 M | 99.4 |
+| IndicWav2Vec-Nepali (AI4Bharat) | 94 M | *pending (gated checkpoint)* |
+
+The gap over Kriti is +6.8 WER points (95% CI [+3.8, +9.9], paired bootstrap). Full tables,
+confidence intervals, methodology and every caveat — including where *we* are weak:
+[RESULTS.md](RESULTS.md).
 
 ## Models
 
