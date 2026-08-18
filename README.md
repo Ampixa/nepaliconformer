@@ -33,8 +33,8 @@ references. Same audio, same scorer, per-system outputs in
 | [Kriti](https://github.com/Naamche-Labs/kriti) (Naamche Labs, IndicConformer fine-tune) | 119 M | 40.6 |
 | **NepaliConformer streaming (ours, 520 ms)** | 121 M | 59.9 |
 | [MMS-1B-all](https://huggingface.co/facebook/mms-1b-all) (Meta, `npi`, zero-shot) | 965 M | 81.0 |
+| [IndicWav2Vec-Nepali](https://huggingface.co/sumanpaudel1997/nepali-asr-indicwav2vec) (community mirror) | 94 M | 86.6 |
 | [Whisper-large-v3](https://huggingface.co/openai/whisper-large-v3) (zero-shot, anti-hallucination tuned) | 809 M | 99.4 |
-| IndicWav2Vec-Nepali (AI4Bharat) | 94 M | *pending (gated checkpoint)* |
 
 The gap over Kriti is +6.8 WER points (95% CI [+3.8, +9.9], paired bootstrap). Full tables,
 confidence intervals, methodology and every caveat — including where *we* are weak:

@@ -20,7 +20,7 @@ reviewed against the audio by a native speaker (49/57 of the newest batch accept
 | MMS-1B-all (Meta, `npi` adapter, zero-shot) | 81.01 | — | — | — | — |
 | Whisper-large-v3, zero-shot, anti-hallucination tuned | 99.41 | — | — | — | — |
 | Whisper-large-v3, zero-shot, defaults | 107.49 | — | — | — | — |
-| IndicWav2Vec-Nepali (AI4Bharat) | *pending — gated checkpoint, access requested* | | | | |
+| IndicWav2Vec-Nepali (community mirror of the AI4Bharat fine-tune) | 86.57 | — | — | — | — |
 
 *S/D/I split measured on the 26-segment first batch; full-set split reproducible from
 `benchmark/outputs/`.
