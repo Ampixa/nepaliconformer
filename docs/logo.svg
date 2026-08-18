@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="NepaliConformer mountain encoder logo">
+  <g fill="#1F2A36">
+    <path d="M34 430 138 300l48 43 91-224 57 99 43-66 103 278Z"/>
+    <path d="m137 300 49 43 91-224 19 33-81 220-50-36Z" opacity=".94"/>
+  </g>
+  <g fill="#DC143C">
+    <rect x="264" y="72" width="42" height="14" rx="7"/>
+    <rect x="257" y="92" width="58" height="14" rx="7"/>
+    <rect x="249" y="112" width="76" height="14" rx="7"/>
+    <rect x="242" y="132" width="91" height="14" rx="7"/>
+    <rect x="234" y="152" width="108" height="14" rx="7"/>
+    <rect x="226" y="172" width="124" height="14" rx="7"/>
+    <rect x="219" y="192" width="139" height="14" rx="7"/>
+    <rect x="211" y="212" width="155" height="14" rx="7"/>
+    <rect x="204" y="232" width="169" height="14" rx="7"/>
+    <rect x="197" y="252" width="183" height="14" rx="7"/>
+    <rect x="190" y="272" width="196" height="14" rx="7"/>
+    <rect x="183" y="292" width="209" height="14" rx="7"/>
+    <rect x="176" y="312" width="221" height="14" rx="7"/>
+    <rect x="168" y="332" width="235" height="14" rx="7"/>
+    <rect x="160" y="352" width="249" height="14" rx="7"/>
+    <rect x="151" y="372" width="265" height="14" rx="7"/>
+    <rect x="141" y="392" width="282" height="14" rx="7"/>
+    <circle cx="285" cy="52" r="10"/>
+  </g>
+</svg>
