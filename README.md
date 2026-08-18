@@ -40,6 +40,17 @@ The gap over Kriti is +6.8 WER points (95% CI [+3.8, +9.9], paired bootstrap). F
 confidence intervals, methodology and every caveat — including where *we* are weak:
 [RESULTS.md](RESULTS.md).
 
+## Read speech (OpenSLR-54)
+
+On a **held-out** 500-utterance slice of OpenSLR-54 (human references, verified absent from the
+released model's training corpus): **31.5% WER** (35.6% through a telephony codec chain).
+
+One honesty note, because it matters for comparisons: the remainder of OpenSLR-54 is *inside*
+our training data, and published systems that report ~15–24% on SLR54-family test sets were
+fine-tuned on those same corpora — read-speech numbers across papers are largely measurements of
+in-domain fit. That is exactly why NepTel exists: on held-out *real* speech the ordering above
+is what survives.
+
 ## Models
 
 | model | params | mode | real-call WER† | HF checkpoint |
