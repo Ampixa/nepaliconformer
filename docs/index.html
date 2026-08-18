@@ -3,232 +3,196 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NepaliConformer — speech recognition for Nepali as it is actually spoken</title>
-<meta name="description" content="Open research-prototype ASR for real spoken Nepali, with NepTel — the first public benchmark on real Nepali call audio.">
+<title>nepaliconformer — ampixa labs</title>
+<meta name="description" content="Speech recognition for Nepali as it is actually spoken. NepTel: the first public benchmark on real Nepali call audio.">
 <link rel="icon" href="logo.svg" type="image/svg+xml">
+<meta property="og:title" content="nepaliconformer — ampixa labs">
+<meta property="og:description" content="ASR for real spoken Nepali. 33.8% WER on real calls, where Whisper-large-v3 scores ~99%.">
 <style>
-:root{
-  --bg:#0E1614; --panel:#141F1C; --panel-2:#182622; --ink:#ECF2EF; --ink-2:#A8B8B3;
-  --ink-3:#75867F; --rule:#243530; --crimson:#DC143C; --crimson-soft:#3A1220;
-}
-*{box-sizing:border-box;margin:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);
-  font:16px/1.65 "Avenir Next","Segoe UI",system-ui,sans-serif}
-.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
-a{color:var(--crimson);text-decoration:none}
-a:hover{text-decoration:underline}
-h1,h2{font-family:"Iowan Old Style",Charter,Georgia,serif;letter-spacing:-.01em;text-wrap:balance}
-h2{font-size:clamp(24px,3.4vw,34px);margin:0 0 14px}
-.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--crimson);margin-bottom:10px}
-section{padding:72px 0;border-top:1px solid var(--rule)}
-.lead{color:var(--ink-2);max-width:66ch}
-code{font-family:"SF Mono",ui-monospace,monospace;font-size:.85em;background:var(--panel);
-  padding:2px 6px;border-radius:3px}
+  :root { --ink:#111; --bg:#fff; --muted:#555; --muted2:#666; --faint:#888;
+          --line:lightgrey; --rule:#ccc; --accent:#DC143C; }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { font-family:'Lucida Console', Monaco, monospace; font-size:18px;
+         line-height:1.55; color:var(--ink); background:var(--bg);
+         max-width:900px; margin:0 auto; padding:0 50px 80px; }
+  a { color:var(--accent); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  hr { border:none; height:2px; background:var(--line); width:100%; margin:40px auto; }
+  h2 { font-weight:bold; font-size:22px; margin:0 0 16px; }
+  p { margin:0 0 16px; }
+  code { font-family:inherit; font-size:.95em; }
 
-/* hero */
-header{position:relative;overflow:hidden}
-header img.bg{width:100%;display:block;min-height:340px;object-fit:cover;opacity:.92}
-.hero-copy{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center}
-.hero-copy .wrap{width:100%}
-h1{font-size:clamp(34px,5.5vw,58px);line-height:1.08;max-width:14ch}
-.tag{font-size:clamp(16px,2vw,20px);color:var(--ink-2);margin-top:14px;max-width:46ch}
-.cta{margin-top:26px;display:flex;gap:12px;flex-wrap:wrap}
-.btn{display:inline-block;padding:11px 20px;border-radius:4px;font-weight:600;font-size:15px}
-.btn.primary{background:var(--crimson);color:#fff}
-.btn.ghost{border:1px solid var(--rule);color:var(--ink)}
-.btn:hover{text-decoration:none;filter:brightness(1.1)}
+  .mast { text-align:center; padding:52px 0 4px; }
+  .wordmark { font-size:clamp(34px, 8vw, 72px); font-weight:bold; letter-spacing:-1px;
+              line-height:1; margin:0; }
+  .wordmark .asr { color:var(--accent); }
+  .wordmark-dev { font-size:clamp(20px, 5vw, 36px); margin-top:14px; color:var(--ink);
+                  font-family:-apple-system,"Noto Sans Devanagari",system-ui,sans-serif; }
+  .tagline { margin-top:22px; color:var(--muted); font-size:16px; }
+  .tagline .accent { color:var(--accent); }
+  .announce { margin-top:14px; font-size:15px; color:#444; }
+  .pill { display:inline-block; padding:1px 8px; border-radius:999px; font-size:12px;
+          letter-spacing:.5px; text-transform:uppercase; background:var(--accent);
+          color:#fff; vertical-align:middle; margin-right:6px; }
 
-/* stats strip */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;
-  background:var(--rule);border:1px solid var(--rule);margin-top:-1px}
-.stat{background:var(--panel);padding:22px 20px}
-.stat b{display:block;font-size:30px;font-variant-numeric:tabular-nums;
-  font-family:"Iowan Old Style",Charter,Georgia,serif}
-.stat span{font-size:13px;color:var(--ink-3)}
-.stat.hot b{color:var(--crimson)}
+  .statement { font-size:clamp(20px, 3.2vw, 32px); line-height:1.3; margin:0 0 8px;
+               text-align:center; }
+  .statement b { color:var(--accent); }
+  .lead { color:var(--muted2); font-size:16px; }
 
-/* two-col with spot art */
-.duo{display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:center}
-.duo img{width:100%;border-radius:6px;border:1px solid var(--rule)}
-@media(max-width:800px){.duo{grid-template-columns:1fr}}
+  .pix { display:block; margin:26px auto 6px; image-rendering:pixelated; }
+  .pix.small { width:min(200px, 44vw); }
+  .pix.wide { width:min(420px, 88vw); }
+  .caption { text-align:center; font-size:13px; color:var(--faint); margin-bottom:18px; }
 
-/* leaderboard */
-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;margin-top:22px}
-th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);
-  text-align:left;padding:10px 14px;border-bottom:2px solid var(--rule)}
-td{padding:12px 14px;border-bottom:1px solid var(--rule);font-size:15px}
-tr.ours td{background:var(--crimson-soft)}
-td.wer{font-weight:700;font-size:17px}
-tr.ours td.wer{color:var(--crimson)}
-.bar{height:8px;background:var(--panel-2);border-radius:4px;overflow:hidden;min-width:120px}
-.bar i{display:block;height:100%;background:var(--ink-3)}
-tr.ours .bar i{background:var(--crimson)}
-.foot{font-size:13px;color:var(--ink-3);margin-top:14px;max-width:74ch}
+  .split { display:flex; gap:36px; align-items:center; }
+  .split > div { flex:1; }
+  @media(max-width:700px){ .split { flex-direction:column; } }
 
-/* model cards */
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:26px}
-@media(max-width:700px){.cards{grid-template-columns:1fr}}
-.card{background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:26px}
-.card h3{font-size:19px;margin-bottom:6px}
-.card .num{font-size:34px;font-family:"Iowan Old Style",Charter,serif;margin:10px 0 2px}
-.card .num small{font-size:14px;color:var(--ink-3);font-family:inherit}
-.card p{font-size:14px;color:var(--ink-2);margin:10px 0 16px}
+  table.board { border-collapse:collapse; width:100%; font-size:16px; }
+  table.board th { text-align:left; font-size:13px; color:var(--muted2);
+                   border-bottom:2px solid var(--line); padding:6px 12px 6px 0; }
+  table.board td { padding:8px 12px 8px 0; border-bottom:1px solid #eee;
+                   vertical-align:middle; }
+  table.board td.wer { font-weight:bold; white-space:nowrap; }
+  table.board tr.ours td { background:#fff5f7; }
+  table.board tr.ours td.wer { color:var(--accent); }
+  .meter { display:inline-block; height:10px; background:#e7e7e7; vertical-align:middle;
+           width:120px; }
+  .meter i { display:block; height:100%; background:#999; }
+  tr.ours .meter i { background:var(--accent); }
 
-/* demo */
-.demoframe{width:100%;height:620px;border:1px solid var(--rule);border-radius:6px;margin-top:24px;background:var(--panel)}
+  .quote { color:var(--ink); font-size:15px; margin:8px 0 16px; padding-left:14px;
+           border-left:2px solid var(--rule); }
+  ul { margin:0 0 16px; padding-left:22px; }
+  li { margin-bottom:8px; }
+  .foot-note { font-size:14px; color:var(--muted2); }
 
-/* honesty */
-.holes{margin-top:20px;display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule)}
-.hole{background:var(--panel);padding:16px 20px;display:grid;grid-template-columns:180px 1fr;gap:16px;font-size:14px}
-.hole b{color:var(--ink)}
-.hole span{color:var(--ink-2)}
-@media(max-width:640px){.hole{grid-template-columns:1fr}}
+  .demo-frame { width:100%; height:560px; border:2px solid var(--line); margin:10px 0 4px; }
 
-footer{border-top:1px solid var(--rule);padding:40px 0 60px;font-size:14px;color:var(--ink-3)}
-footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+  .bottom { text-align:center; color:var(--faint); font-size:14px; margin-top:8px; }
+  .separator { letter-spacing:-9px; color:#ccc; }
 </style>
 </head>
 <body>
 
-<header>
-  <img class="bg" src="img/hero.jpg" alt="">
-  <div class="hero-copy">
-    <div class="wrap">
-      <div class="eyebrow">Ampixa · open research prototype</div>
-      <h1>Speech recognition for Nepali as it is actually spoken</h1>
-      <p class="tag">Trained on 1,655 hours of conversational Nepali. Benchmarked on real
-      call audio — where everything else falls apart.</p>
-      <div class="cta">
-        <a class="btn primary" href="https://huggingface.co/spaces/voidash/nepaliconformer">Try it in your browser</a>
-        <a class="btn ghost" href="https://github.com/Ampixa/nepaliconformer">GitHub</a>
-      </div>
-    </div>
-  </div>
-</header>
+<div class="mast">
+  <h1 class="wordmark">nepali<span class="asr">conformer</span></h1>
+  <div class="wordmark-dev">नेपाली स्पीच रेकग्निसन</div>
+  <p class="tagline">speech recognition for Nepali <span class="accent">as it is actually spoken</span></p>
+  <p class="announce"><span class="pill">new</span> research prototype + <b>NepTel</b>, the first
+  public benchmark on real Nepali call audio ·
+  <a href="https://github.com/Ampixa/nepaliconformer">github</a> ·
+  <a href="https://huggingface.co/ampixa/nepali-conformer-offline">weights</a> ·
+  <a href="https://huggingface.co/spaces/voidash/nepaliconformer">demo</a></p>
+</div>
 
-<div class="wrap">
-  <div class="stats">
-    <div class="stat hot"><b>33.8%</b><span>WER on real Nepali calls (NepTel)</span></div>
-    <div class="stat"><b>121M</b><span>parameters — runs on CPU</span></div>
-    <div class="stat"><b>1,655h</b><span>conversational Nepali training audio</span></div>
-    <div class="stat"><b>5</b><span>systems measured on identical audio</span></div>
+<hr>
+
+<div class="split">
+  <div>
+    <p class="statement">Read-aloud benchmarks <b>don't survive</b> a real conversation.</p>
+    <p class="lead">Nearly all Nepali speech technology is built and scored on read-aloud
+    recordings. Real Nepali — spontaneous, conversational, code-switched, on noisy 8 kHz
+    lines — is acoustically another language. Whisper-large-v3, zero-shot on real Nepali
+    calls, scores <b>~99% word error rate</b>: it drifts into Hindi spelling and hallucination
+    loops. nepaliconformer is trained on 1,655 hours of <b>conversation</b>, and measured where
+    it counts.</p>
+  </div>
+  <div>
+    <img class="pix wide" src="img/pixel_duo.png" alt="two pixel people talking">
+    <p class="caption">कुराकानी — the audio we actually care about</p>
   </div>
 </div>
 
-<section id="why">
-  <div class="wrap duo">
-    <div>
-      <div class="eyebrow">Why this exists</div>
-      <h2>Read-aloud benchmarks don't survive a phone call</h2>
-      <p class="lead">Roughly 33 million people speak Nepali, and nearly all speech technology
-      for it is built and scored on read-aloud recordings. Real Nepali — spontaneous,
-      conversational, code-switched, on noisy 8&nbsp;kHz lines — is acoustically a different
-      language. The largest multilingual model in the world, Whisper-large-v3, scores
-      <b>~99% word error rate</b> on real Nepali calls: it drifts into Hindi spelling and
-      hallucination loops. Until now there was no public way to even see this. NepaliConformer
-      is trained on conversation, and <b>NepTel</b> — our benchmark of genuine Nepali
-      call-center audio with human-reviewed references — measures what actually survives
-      contact with reality.</p>
-    </div>
-    <img src="img/speech.jpg" alt="">
-  </div>
-</section>
+<hr>
 
-<section id="benchmark">
-  <div class="wrap">
-    <div class="duo">
-      <div>
-        <div class="eyebrow">NepTel benchmark</div>
-        <h2>Every system, same audio, same scorer</h2>
-        <p class="lead">75 segments · 2,375 words of real Nepali customer-support calls,
-        references drafted by Google Chirp&nbsp;2 and reviewed word-by-segment by a native
-        speaker. Per-system outputs are published, so every number below can be re-derived.</p>
-      </div>
-      <img src="img/benchmark.jpg" alt="">
-    </div>
-    <table>
-      <tr><th>system</th><th>params</th><th style="text-align:right">WER ↓</th><th></th></tr>
-      <tr class="ours"><td><b>NepaliConformer offline</b> (ours)</td><td>121M</td>
-        <td class="wer" style="text-align:right">33.8</td><td><div class="bar"><i style="width:34%"></i></div></td></tr>
-      <tr><td><a href="https://github.com/Naamche-Labs/kriti">Kriti</a> — Naamche Labs</td><td>119M</td>
-        <td class="wer" style="text-align:right">40.6</td><td><div class="bar"><i style="width:41%"></i></div></td></tr>
-      <tr class="ours"><td><b>NepaliConformer streaming</b> (ours, 520&nbsp;ms)</td><td>121M</td>
-        <td class="wer" style="text-align:right">59.9</td><td><div class="bar"><i style="width:60%"></i></div></td></tr>
-      <tr><td><a href="https://huggingface.co/facebook/mms-1b-all">MMS-1B</a> — Meta, zero-shot</td><td>965M</td>
-        <td class="wer" style="text-align:right">81.0</td><td><div class="bar"><i style="width:81%"></i></div></td></tr>
-      <tr><td><a href="https://huggingface.co/sumanpaudel1997/nepali-asr-indicwav2vec">IndicWav2Vec</a> — community mirror</td><td>94M</td>
-        <td class="wer" style="text-align:right">86.6</td><td><div class="bar"><i style="width:87%"></i></div></td></tr>
-      <tr><td><a href="https://huggingface.co/openai/whisper-large-v3">Whisper-large-v3</a> — zero-shot, tuned</td><td>809M</td>
-        <td class="wer" style="text-align:right">99.4</td><td><div class="bar"><i style="width:99%"></i></div></td></tr>
-    </table>
-    <p class="foot">NepTel is our benchmark — that authorship, the full reference protocol,
-    review statistics, and every known bias are documented in the
-    <a href="https://github.com/Ampixa/nepaliconformer/blob/master/benchmark/PROVENANCE.md">provenance</a>.
-    Margin over Kriti: +6.8 WER points, 95%&nbsp;CI [+3.8,&nbsp;+9.9], paired bootstrap.
-    Have a Nepali ASR system? <a href="https://github.com/Ampixa/nepaliconformer/tree/master/benchmark">Run the scorer and open a PR</a> — we would love to be beaten.</p>
-  </div>
-</section>
+<h2>NepTel — every system, same audio, same scorer</h2>
+<p class="lead">75 segments · 2,375 words of real Nepali customer-support calls. References
+drafted by Chirp 2, then reviewed segment-by-segment by a native speaker. Per-system outputs
+are <a href="https://github.com/Ampixa/nepaliconformer/tree/master/benchmark/outputs">published</a>,
+so every number below can be re-derived.</p>
 
-<section id="models">
-  <div class="wrap">
-    <div class="eyebrow">Models</div>
+<table class="board">
+  <tr><th>system</th><th>params</th><th>WER ↓</th><th></th></tr>
+  <tr class="ours"><td><b>nepaliconformer offline</b> (ours)</td><td>121M</td>
+      <td class="wer">33.8</td><td><span class="meter"><i style="width:34%"></i></span></td></tr>
+  <tr><td><a href="https://github.com/Naamche-Labs/kriti">Kriti</a> — Naamche Labs</td><td>119M</td>
+      <td class="wer">40.6</td><td><span class="meter"><i style="width:41%"></i></span></td></tr>
+  <tr class="ours"><td><b>nepaliconformer streaming</b> (ours, 520 ms)</td><td>121M</td>
+      <td class="wer">59.9</td><td><span class="meter"><i style="width:60%"></i></span></td></tr>
+  <tr><td><a href="https://huggingface.co/facebook/mms-1b-all">MMS-1B</a> — Meta, zero-shot</td><td>965M</td>
+      <td class="wer">81.0</td><td><span class="meter"><i style="width:81%"></i></span></td></tr>
+  <tr><td><a href="https://huggingface.co/sumanpaudel1997/nepali-asr-indicwav2vec">IndicWav2Vec</a> — community mirror</td><td>94M</td>
+      <td class="wer">86.6</td><td><span class="meter"><i style="width:87%"></i></span></td></tr>
+  <tr><td><a href="https://huggingface.co/openai/whisper-large-v3">Whisper-large-v3</a> — zero-shot, tuned</td><td>809M</td>
+      <td class="wer">99.4</td><td><span class="meter"><i style="width:99%"></i></span></td></tr>
+</table>
+
+<p class="foot-note" style="margin-top:14px">NepTel is our benchmark — authorship, the full
+reference protocol, review statistics, and every known bias are in the
+<a href="https://github.com/Ampixa/nepaliconformer/blob/master/benchmark/PROVENANCE.md">provenance</a>.
+Margin over Kriti: +6.8 WER, 95% CI [+3.8, +9.9], paired bootstrap. Have a Nepali ASR system?
+<a href="https://github.com/Ampixa/nepaliconformer/tree/master/benchmark">Run the scorer, open a PR</a> —
+we would love to be beaten.</p>
+
+<hr>
+
+<div class="split">
+  <div>
+    <img class="pix small" src="img/pixel_caller.png" alt="pixel person on the phone">
+    <p class="caption">the deployment condition</p>
+  </div>
+  <div>
     <h2>Two checkpoints, honestly labeled</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>nepali-conformer-offline</h3>
-        <div class="num">33.8 <small>WER · real calls</small></div>
-        <p>Full-context decoding. The strongest system we measured on real Nepali speech.
-        Use this unless you need word-by-word streaming.</p>
-        <a class="btn ghost" href="https://huggingface.co/ampixa/nepali-conformer-offline">Hugging&nbsp;Face →</a>
-      </div>
-      <div class="card">
-        <h3>nepali-conformer-streaming</h3>
-        <div class="num">59.9 <small>WER · real calls</small></div>
-        <p>Cache-aware incremental decoding with 520&nbsp;ms lookahead, for live agents.
-        Carries a large measured penalty we're actively working down — documented, not hidden.</p>
-        <a class="btn ghost" href="https://huggingface.co/ampixa/nepali-conformer-streaming">Hugging&nbsp;Face →</a>
-      </div>
-    </div>
+    <p><b>offline</b> — full-context decoding, 33.8 WER on real calls. The strongest system we
+    measured. <a href="https://huggingface.co/ampixa/nepali-conformer-offline">weights</a></p>
+    <p><b>streaming</b> — cache-aware, 520 ms lookahead, for live agents. 59.9 WER: it carries a
+    large measured penalty we are actively working down — documented, not hidden.
+    <a href="https://huggingface.co/ampixa/nepali-conformer-streaming">weights</a></p>
+    <p class="foot-note">121M-param Conformer, hybrid TDT/CTC, Devanagari SentencePiece.
+    Runs on CPU. Code MIT · weights CC-BY-NC.</p>
   </div>
-</section>
+</div>
 
-<section id="try">
-  <div class="wrap">
-    <div class="eyebrow">Try it</div>
-    <h2>Speak Nepali to it, right here</h2>
-    <p class="lead">Microphone or file upload — runs the offline model on a free CPU, so give a
-    30-second clip ten to twenty seconds.</p>
-    <iframe class="demoframe" src="https://voidash-nepaliconformer.hf.space" title="NepaliConformer demo" allow="microphone"></iframe>
-  </div>
-</section>
+<hr>
 
-<section id="honesty">
-  <div class="wrap">
-    <div class="eyebrow">What it can't do yet</div>
-    <h2>Measured limitations, published on purpose</h2>
-    <p class="lead">Every hole below was found by measurement and ships with the release —
-    because a benchmark you can't trust is worse than none.</p>
-    <div class="holes">
-      <div class="hole"><b>English</b><span>Effectively English-deaf beyond Devanagari loanwords — 76–95% WER on English call audio.</span></div>
-      <div class="hole"><b>Sung / melodic speech</b><span>Emits at ~¼ of its normal rate on sung Nepali vocals.</span></div>
-      <div class="hole"><b>Very slow speech</b><span>0.6× speaking rate costs ~11 WER points.</span></div>
-      <div class="hole"><b>End-of-turn</b><span>The learned end-of-turn signal never fires on real calls; demos endpoint with energy VAD.</span></div>
-      <div class="hole"><b>Read speech</b><span>Mid-pack (31.5% held-out) — systems tuned on read corpora beat us there. Our ground is real speech.</span></div>
-    </div>
-    <p class="foot">Full numbers, instruments and confidence intervals:
-    <a href="https://github.com/Ampixa/nepaliconformer/blob/master/RESULTS.md">RESULTS.md</a>.</p>
-  </div>
-</section>
+<h2>Try it — speak Nepali to it</h2>
+<p class="lead">Microphone or file, ≤60 s. Free CPU: a 30-second clip takes ten to twenty
+seconds.</p>
+<iframe class="demo-frame" src="https://voidash-nepaliconformer.hf.space" title="nepaliconformer demo" allow="microphone"></iframe>
 
-<footer>
-  <div class="wrap">
-    <div>© 2026 <a href="https://ampixa.com">Ampixa</a> · code MIT · weights CC-BY-NC · NepTel references CC-BY-4.0</div>
-    <div><a href="https://github.com/Ampixa/nepaliconformer">GitHub</a> ·
-         <a href="https://huggingface.co/ampixa">Hugging Face</a> ·
-         <a href="https://tts.ampixa.com/sanoTTS/">sanoTTS</a></div>
+<hr>
+
+<div class="split">
+  <div>
+    <h2>What it can't do yet</h2>
+    <p class="lead">Found by measurement, shipped with the release — a benchmark you can't
+    trust is worse than none.</p>
+    <ul style="font-size:15px">
+      <li><b>English</b> — effectively English-deaf beyond Devanagari loanwords (76–95% WER on English call audio)</li>
+      <li><b>Sung / melodic speech</b> — emits at ~¼ its normal rate</li>
+      <li><b>Very slow speech</b> — 0.6× rate costs ~11 WER points</li>
+      <li><b>End-of-turn</b> — the learned signal never fires on real calls; demos use energy VAD</li>
+      <li><b>Read speech</b> — mid-pack (31.5% held-out); read-corpus specialists beat us there. Our ground is real speech.</li>
+    </ul>
+    <p class="foot-note">Full numbers, instruments, confidence intervals:
+    <a href="https://github.com/Ampixa/nepaliconformer/blob/master/RESULTS.md">RESULTS.md</a></p>
   </div>
-</footer>
+  <div>
+    <img class="pix small" src="img/pixel_listen.png" alt="pixel person reviewing audio">
+    <p class="caption">every reference, human-reviewed</p>
+  </div>
+</div>
+
+<hr>
+
+<p class="bottom">© 2026 <a href="https://ampixa.com">ampixa labs</a>
+<span class="separator">|||</span>
+<a href="https://github.com/Ampixa/nepaliconformer">github</a> ·
+<a href="https://huggingface.co/ampixa">hugging face</a> ·
+<a href="https://tts.ampixa.com/sanoTTS/">sanoTTS</a></p>
 
 </body>
 </html>
