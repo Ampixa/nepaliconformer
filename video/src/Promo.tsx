@@ -12,7 +12,7 @@ import {
 } from "remotion";
 
 export type Scene = {
-  kind: "everyday" | "gap" | "modes" | "outro";
+  kind: "title" | "everyday" | "gap" | "modes" | "outro";
   id: string;
   durFrames: number;
   wav?: string;
@@ -229,6 +229,57 @@ const Card: React.FC<{
   );
 };
 
+// scene 0: title card
+const Title: React.FC<{ dur: number }> = ({ dur }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const pop = spring({ frame: frame - 4, fps, config: { damping: 13 } });
+  const sub = interpolate(frame, [dur * 0.35, dur * 0.6], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  return (
+    <AbsoluteFill
+      style={{
+        background: BG,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "column",
+        gap: 30,
+      }}
+    >
+      <div
+        style={{
+          fontFamily: MONO,
+          fontWeight: 700,
+          fontSize: 124,
+          letterSpacing: -3,
+          color: "#EAF4FF",
+          transform: `scale(${pop})`,
+          textShadow: `0 0 34px ${CYAN}33`,
+        }}
+      >
+        nepali<span style={{ color: CRIMSON }}>conformer</span>
+      </div>
+      <div
+        style={{
+          fontFamily: MONO,
+          fontSize: 40,
+          color: CYAN,
+          opacity: sub,
+          textShadow: `0 0 14px ${CYAN}55`,
+        }}
+      >
+        ASR MODEL FOR NEPALI
+      </div>
+      <div style={{ fontFamily: DEV, fontSize: 34, color: DIM, opacity: sub }}>
+        नेपालको लागि बनेको स्वचालित बोली पहिचान
+      </div>
+    </AbsoluteFill>
+  );
+};
+
 // scene 1: everyday Nepal
 const Everyday: React.FC<{ s: Scene }> = ({ s }) => {
   const frame = useCurrentFrame();
@@ -239,21 +290,34 @@ const Everyday: React.FC<{ s: Scene }> = ({ s }) => {
   return (
     <Viewport veo={s.veo}>
       {!s.veo ? <PixelHills /> : null}
+      {s.veo ? (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(90deg, rgba(6,10,14,0.82) 0%, rgba(6,10,14,0.45) 38%, transparent 62%)",
+          }}
+        />
+      ) : null}
       <div
         style={{
           position: "absolute",
           inset: 0,
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: s.veo ? "flex-start" : "center",
+          paddingLeft: s.veo ? 70 : 0,
           gap: 70,
         }}
       >
-        <Img
-          src={staticFile("pixel_duo.png")}
-          style={{ width: 480, imageRendering: "pixelated", opacity: a }}
-        />
-        <div style={{ fontFamily: DEV, color: "#EAF4FF", fontSize: 58, lineHeight: 1.45, opacity: a, maxWidth: 640 }}>
+        {!s.veo ? (
+          <Img
+            src={staticFile("pixel_duo.png")}
+            style={{ width: 480, imageRendering: "pixelated", opacity: a }}
+          />
+        ) : null}
+        <div style={{ fontFamily: DEV, color: "#EAF4FF", fontSize: 58, lineHeight: 1.45, opacity: a, maxWidth: 640, textShadow: "0 2px 18px rgba(0,0,0,0.85)" }}>
           तपाईंको <span style={{ color: CYAN }}>आमाको</span> लागि,
           <br />
           तपाईंको <span style={{ color: CYAN }}>भाइको</span> लागि।
@@ -445,7 +509,9 @@ export const Promo: React.FC<{ timeline: TimelineData }> = ({ timeline }) => {
           <Sequence key={s.id} from={from} durationInFrames={s.durFrames}>
             {s.wav ? <Audio src={staticFile(s.wav)} /> : null}
             <AbsoluteFill>
-              {s.kind === "everyday" ? (
+              {s.kind === "title" ? (
+                <Title dur={s.durFrames} />
+              ) : s.kind === "everyday" ? (
                 <Everyday s={s} />
               ) : s.kind === "gap" ? (
                 <Gap s={s} />
@@ -454,7 +520,7 @@ export const Promo: React.FC<{ timeline: TimelineData }> = ({ timeline }) => {
               ) : (
                 <Outro s={s} />
               )}
-              <SceneASR s={s} />
+              {s.kind !== "title" ? <SceneASR s={s} /> : null}
               <Scanlines />
             </AbsoluteFill>
           </Sequence>
