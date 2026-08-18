@@ -68,10 +68,21 @@ words (WER 65.6 → 107.8 across the sweep): the information is absent upstream,
 
 ## Read-speech anchor
 
-On held-out gold read Nepali (OpenSLR-54 style), this lineage scores ≈22% WER — in the same band
-as published fine-tuned systems on such data. The distance from 22% (read) to 34% (real calls,
-offline) to 60% (real calls, streaming) is the point of this release: **read-speech WERs do not
-predict telephony performance**, and until NepTel there was no public way to see that for Nepali.
+On a held-out gold read slice (500 OpenSLR-54 utterances with human references, verified absent
+from this checkpoint's training corpus), the released offline model scores **31.5% WER**
+(35.6% through the telephony chain). Published fine-tuned systems reach ~15% on comparable read
+data — on read speech we are mid-pack, and we say so. The point of this release is the other
+direction: from 31.5% (read) to 33.8% (real calls) our degradation is small, while systems
+optimized on read/prompted speech collapse on real calls. Read-speech WERs do not predict
+telephony performance, and until NepTel there was no public way to see that for Nepali.
+
+*Correction note: an earlier revision of this file quoted "≈22%" here; that number belonged to a
+different, unreleased checkpoint. 31.5% is the released model's measured number.*
+
+**Why no OpenSLR-54 test row?** All of OpenSLR-54 sits inside our training corpus (it is our
+only human-labeled training source), so any SLR54 number from us would be train-set performance.
+We refuse to publish that as a benchmark; the held-out W1 read slice above is the honest
+substitute.
 
 ## Training data, honestly
 
