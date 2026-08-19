@@ -50,9 +50,31 @@ python ../eval/score_reference.py --hyp outputs/nepali-conformer-offline.json
 # -> 75 reference segments, 2375 words / WER 0.3381
 ```
 
-## Submit a system
+## Plug in your system
 
-Run your system over `neptel_audio/`, write `[{"seg": "...", "text": "..."}, ...]`, then:
+`run_system.py` runs your ASR over the segments and scores it — pick the adapter that fits,
+you should not have to write a loop:
+
+```bash
+# anything with a transformers ASR pipeline (Whisper, wav2vec2, MMS, ...)
+python run_system.py --hf openai/whisper-large-v3 --name whisper --lang ne
+
+# a NeMo checkpoint (.nemo path or hub id)
+python run_system.py --nemo nepali_conformer_offline.nemo --name mine
+
+# any CLI tool: {audio} becomes the wav path, stdout is the transcript
+python run_system.py --cmd "whisper-cli -f {audio} --output-txt -" --name whispercpp
+
+# your own function, `def transcribe(path: str) -> str`
+python run_system.py --py mypackage.mymodule:transcribe --name mine
+```
+
+It writes `outputs/<name>.json` and prints the WER. Add
+`--compare outputs/nepali-conformer-offline.json` for a paired bootstrap against ours, which
+is the number that tells you whether a difference is real.
+
+If your system does not fit any adapter, write the JSON yourself —
+`[{"seg": "...", "text": "..."}, ...]` over the 75 scored segments — and score it directly:
 
 ```bash
 python ../eval/score_reference.py --hyp your_outputs.json
