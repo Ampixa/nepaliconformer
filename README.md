@@ -31,6 +31,7 @@ references. Same audio, same scorer, per-system outputs in
 
 | system | params | WER ↓ |
 |---|---|---|
+| [**Kriti Telephony**](https://github.com/Naamche-Labs/kriti-telephony) (Naamche Labs, Kriti domain-adapted) | 119 M | **32.4** |
 | **NepaliConformer offline (ours)** | 121 M | **33.8** |
 | [Kriti](https://github.com/Naamche-Labs/kriti) (Naamche Labs, IndicConformer fine-tune) | 119 M | 40.6 |
 | **NepaliConformer streaming (ours, 520 ms)** | 121 M | 59.9 |
