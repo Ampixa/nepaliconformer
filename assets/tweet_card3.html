@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { width: 1600px; height: 900px; background: #fff; overflow: hidden;
+         font-family: 'Lucida Console', Monaco, monospace; color: #111;
+         display: flex; align-items: center; padding: 0 90px; gap: 50px; }
+  .left { flex: 1; text-align: center; }
+  .left img { width: 440px; image-rendering: pixelated; }
+  .left .cap { font-size: 18px; color: #888; margin-top: 14px;
+               font-family: -apple-system, 'Noto Sans Devanagari', sans-serif; }
+  .right { flex: 1.45; }
+  h1 { font-size: 46px; font-weight: bold; letter-spacing: -1px; margin-bottom: 12px; }
+  h1 .asr { color: #DC143C; }
+  .sub { font-size: 22px; color: #555; margin-bottom: 36px; line-height: 1.55; }
+  .chip { background: #F6F6F6; border: 2px solid lightgrey; padding: 22px 26px;
+          font-size: 21px; line-height: 1.8; margin-bottom: 30px; white-space: pre; }
+  .chip .c { color: #888; }
+  .row { font-size: 22px; line-height: 2.0; }
+  .row b { color: #DC143C; font-weight: normal; }
+  .foot { font-size: 18px; color: #666; margin-top: 26px; }
+</style>
+</head>
+<body>
+  <div class="left">
+    <img src="px_speaker.png" alt="">
+    <div class="cap">बोल्न सुरु गर्नुहोस् — start speaking</div>
+  </div>
+  <div class="right">
+    <h1>nepali<span class="asr">conformer</span> — try it now</h1>
+    <div class="sub">one 485 MB file · runs on CPU · code MIT · weights CC-BY-NC</div>
+    <div class="chip"><span class="c">$</span> pip install -U huggingface_hub "nemo_toolkit[asr]"
+<span class="c">$</span> hf download ampixa/nepali-conformer-offline \
+      nepali_conformer_offline.nemo --local-dir .</div>
+    <div class="row">
+      browser demo (mic or file) — <b>huggingface.co/spaces/voidash/nepaliconformer</b><br>
+      weights — <b>huggingface.co/ampixa</b><br>
+      code + benchmark — <b>github.com/Ampixa/nepaliconformer</b><br>
+      site — <b>asr.ampixa.com</b>
+    </div>
+    <div class="foot">have a better Nepali ASR? run the NepTel scorer, open a PR — we would love to be beaten.</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { width: 1600px; height: 900px; background: #fff; overflow: hidden;
+         font-family: 'Lucida Console', Monaco, monospace; color: #111;
+         display: flex; align-items: center; padding: 0 90px; gap: 60px; }
+  .left { flex: 1.35; }
+  .right { flex: 1; text-align: center; }
+  .right img { width: 430px; image-rendering: pixelated; }
+  .right .cap { font-size: 18px; color: #888; margin-top: 14px; }
+  h1 { font-size: 44px; font-weight: bold; letter-spacing: -1px; margin-bottom: 10px; }
+  h1 .asr { color: #DC143C; }
+  .sub { font-size: 21px; color: #555; margin-bottom: 38px; line-height: 1.5; }
+  table { border-collapse: collapse; width: 100%; font-size: 24px; }
+  th { text-align: left; font-size: 17px; color: #666; border-bottom: 3px solid lightgrey;
+       padding: 8px 16px 8px 0; font-weight: normal; }
+  td { padding: 13px 16px 13px 0; border-bottom: 2px solid #eee; vertical-align: middle; }
+  td.wer { font-weight: bold; white-space: nowrap; }
+  tr.ours td { background: #fff5f7; }
+  tr.ours td.wer { color: #DC143C; }
+  .meter { display: inline-block; height: 14px; background: #e7e7e7; vertical-align: middle; width: 170px; }
+  .meter i { display: block; height: 100%; background: #999; }
+  tr.ours .meter i { background: #DC143C; }
+  .foot { font-size: 17px; color: #666; margin-top: 30px; line-height: 1.6; }
+  .foot b { color: #111; }
+</style>
+</head>
+<body>
+  <div class="left">
+    <h1>NepTel<span class="asr"> benchmark</span> — real Nepali call audio</h1>
+    <div class="sub">75 segments · 2,375 words · human-reviewed references ·
+    every system, same audio, same scorer</div>
+    <table>
+      <tr><th>system</th><th>WER ↓</th><th></th></tr>
+      <tr class="ours"><td><b>nepaliconformer offline</b> (ours, 121M)</td>
+          <td class="wer">33.8</td><td><span class="meter"><i style="width:34%"></i></span></td></tr>
+      <tr><td>Kriti — Naamche Labs (119M)</td>
+          <td class="wer">40.6</td><td><span class="meter"><i style="width:41%"></i></span></td></tr>
+      <tr class="ours"><td><b>nepaliconformer streaming</b> (ours, 520 ms)</td>
+          <td class="wer">59.9</td><td><span class="meter"><i style="width:60%"></i></span></td></tr>
+      <tr><td>MMS-1B — Meta, zero-shot (965M)</td>
+          <td class="wer">81.0</td><td><span class="meter"><i style="width:81%"></i></span></td></tr>
+      <tr><td>IndicWav2Vec — community mirror (94M)</td>
+          <td class="wer">86.6</td><td><span class="meter"><i style="width:87%"></i></span></td></tr>
+      <tr><td>Whisper-large-v3 — zero-shot, tuned (809M)</td>
+          <td class="wer">99.4</td><td><span class="meter"><i style="width:99%"></i></span></td></tr>
+    </table>
+    <div class="foot">margin over Kriti: <b>+6.8 WER</b>, 95% CI [+3.8, +9.9], paired bootstrap ·
+    outputs + provenance published — <b>github.com/Ampixa/nepaliconformer</b></div>
+  </div>
+  <div class="right">
+    <img src="px_podium.png" alt="">
+    <div class="cap">रियल कल अडियोमा नम्बर १</div>
+  </div>
+</body>
+</html>

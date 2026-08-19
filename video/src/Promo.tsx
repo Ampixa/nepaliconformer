@@ -379,8 +379,23 @@ const TitleCard: React.FC = () => {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
+  const soundBlink = Math.floor(frame / 12) % 2 === 0;
   return (
     <>
+      <div
+        style={{
+          position: "absolute",
+          top: 30,
+          right: 46,
+          fontFamily: MONO,
+          fontSize: 26,
+          color: soundBlink ? CRIMSON : FAINT,
+          border: `2px solid ${soundBlink ? CRIMSON : LINE}`,
+          padding: "8px 18px",
+        }}
+      >
+        🔊 enable sound — <span style={{ fontFamily: DEV }}>आवाज खोल्नुहोस्</span>
+      </div>
       <div
         style={{
           fontFamily: MONO,
@@ -388,7 +403,7 @@ const TitleCard: React.FC = () => {
           fontSize: 116,
           letterSpacing: -3,
           color: INK,
-          transform: `scale(${pop})`,
+          transform: `scale(${0.92 + 0.08 * pop})`,
         }}
       >
         nepali<span style={{ color: CRIMSON }}>conformer</span>
