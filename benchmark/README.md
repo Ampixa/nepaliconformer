@@ -14,7 +14,13 @@ Canary: `NEPTEL-CANARY-2026-8f3a1c92`
   re-derivable with `../eval/score_reference.py --hyp outputs/<system>.json`
 - `fetch_audio.py` — downloads the source audio from the canonical public dataset
   ([InfoBayAI Nepali Call Center Dual Channel](https://huggingface.co/datasets/InfoBayAI/Nepali_Call_Center_Audio_Dataset_Dual_Channel),
-  CC-BY-4.0) and reproduces the segment cuts
+  CC-BY-4.0) and writes the segment cuts, checking each one against the duration recorded in
+  `references.json`
+
+`references.json` ships all 77 segments; the 2 carrying an `excluded` field (one rate-gated,
+one flagged unintelligible in review) are skipped by the scorer, leaving the 75 scored
+segments / 2,375 words quoted in the results. They are kept in the file rather than deleted so
+the exclusions stay auditable.
 
 ## Reference protocol
 
@@ -32,9 +38,21 @@ on Chirp 2 pseudo-labels (including ours) share label lineage with the reference
 is sized for ±2-point deltas between systems, not for absolute-truth WERs. v0.2 will grow toward
 100+ calls with speaker-disjoint dev/test splits.
 
+## Run it yourself
+
+```bash
+pip install huggingface_hub soundfile numpy
+hf auth login                       # the source dataset is gated (auto-approved)
+python fetch_audio.py neptel_audio  # writes 77 wavs, verifies every cut
+
+# reproduce any published number without touching the audio:
+python ../eval/score_reference.py --hyp outputs/nepali-conformer-offline.json
+# -> 75 reference segments, 2375 words / WER 0.3381
+```
+
 ## Submit a system
 
-Run your system over the audio, write `[{"seg": "...", "text": "..."}, ...]`, then:
+Run your system over `neptel_audio/`, write `[{"seg": "...", "text": "..."}, ...]`, then:
 
 ```bash
 python ../eval/score_reference.py --hyp your_outputs.json

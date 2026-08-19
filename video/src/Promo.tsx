@@ -429,7 +429,7 @@ const Gap: React.FC<{ s: Scene }> = ({ s }) => {
         enterFrame={10}
         title="✗ whisper-large-v3"
         color={FAINT}
-        lines={["99.4% WER", "हिन्दी बहाव · hallucination", "प्रयोगयोग्य छैन"]}
+        lines={["96.3% WER", "हिन्दी बहाव · hallucination", "प्रयोगयोग्य छैन"]}
       />
       <Card
         x={width * 0.52}
@@ -487,7 +487,7 @@ const Outro: React.FC<{ s: Scene }> = ({ s }) => {
     { n: "1. nepaliconformer offline", v: "33.8%", ours: true },
     { n: "2. Kriti (Naamche)", v: "40.6%", ours: false },
     { n: "3. MMS-1B (Meta)", v: "81.0%", ours: false },
-    { n: "4. Whisper-large-v3", v: "99.4%", ours: false },
+    { n: "4. Whisper-large-v3", v: "96.3%", ours: false },
   ];
   const endA = interpolate(frame, [half, half + 14], [0, 1], {
     extrapolateLeft: "clamp",

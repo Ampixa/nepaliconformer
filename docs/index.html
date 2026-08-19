@@ -7,7 +7,7 @@
 <meta name="description" content="Speech recognition for Nepali as it is actually spoken. NepTel: the first public benchmark on real Nepali call audio.">
 <link rel="icon" href="logo.svg" type="image/svg+xml">
 <meta property="og:title" content="nepaliconformer — ampixa labs">
-<meta property="og:description" content="ASR for real spoken Nepali. 33.8% WER on real calls, where Whisper-large-v3 scores ~99%.">
+<meta property="og:description" content="ASR for real spoken Nepali. 33.8% WER on real calls, where Whisper-large-v3 scores ~96%.">
 <style>
   :root { --ink:#111; --bg:#fff; --muted:#555; --muted2:#666; --faint:#888;
           --line:lightgrey; --rule:#ccc; --accent:#DC143C; }
@@ -96,7 +96,7 @@
     <p class="lead">Nearly all Nepali speech technology is built and scored on read-aloud
     recordings. Real Nepali — spontaneous, conversational, code-switched, on noisy 8 kHz
     lines — is acoustically another language. Whisper-large-v3, zero-shot on real Nepali
-    calls, scores <b>~99% word error rate</b>: it drifts into Hindi spelling and hallucination
+    calls, scores <b>~96% word error rate</b>: it drifts into Hindi spelling and hallucination
     loops. nepaliconformer is trained on 1,655 hours of <b>conversation</b>, and measured where
     it counts.</p>
   </div>
@@ -127,7 +127,7 @@ so every number below can be re-derived.</p>
   <tr><td><a href="https://huggingface.co/sumanpaudel1997/nepali-asr-indicwav2vec">IndicWav2Vec</a> — community mirror</td><td>94M</td>
       <td class="wer">86.6</td><td><span class="meter"><i style="width:87%"></i></span></td></tr>
   <tr><td><a href="https://huggingface.co/openai/whisper-large-v3">Whisper-large-v3</a> — zero-shot, tuned</td><td>809M</td>
-      <td class="wer">99.4</td><td><span class="meter"><i style="width:99%"></i></span></td></tr>
+      <td class="wer">96.3</td><td><span class="meter"><i style="width:96%"></i></span></td></tr>
 </table>
 
 <p class="foot-note" style="margin-top:14px">NepTel is our benchmark — authorship, the full

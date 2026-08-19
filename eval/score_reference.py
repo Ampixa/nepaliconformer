@@ -56,6 +56,8 @@ def load_refs(manifest):
     man = json.load(open(manifest, encoding="utf-8"))
     segs = []
     for m in man["segments"]:
+        if m.get("excluded"):
+            continue
         if not m.get("reference") and not m.get("chirp2"):
             continue
         text = m.get("reference") or m["chirp2"]

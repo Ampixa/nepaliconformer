@@ -36,7 +36,7 @@ references. Same audio, same scorer, per-system outputs in
 | **NepaliConformer streaming (ours, 520 ms)** | 121 M | 59.9 |
 | [MMS-1B-all](https://huggingface.co/facebook/mms-1b-all) (Meta, `npi`, zero-shot) | 965 M | 81.0 |
 | [IndicWav2Vec-Nepali](https://huggingface.co/sumanpaudel1997/nepali-asr-indicwav2vec) (community mirror) | 94 M | 86.6 |
-| [Whisper-large-v3](https://huggingface.co/openai/whisper-large-v3) (zero-shot, anti-hallucination tuned) | 809 M | 99.4 |
+| [Whisper-large-v3](https://huggingface.co/openai/whisper-large-v3) (zero-shot, anti-hallucination tuned) | 809 M | 96.3 |
 
 The gap over Kriti is +6.8 WER points (95% CI [+3.8, +9.9], paired bootstrap). Full tables,
 confidence intervals, methodology and every caveat — including where *we* are weak:
@@ -61,7 +61,7 @@ is what survives.
 | `nepali-conformer-streaming` | 121.3 M | cache-aware, 520 ms lookahead | 59.9 | [ampixa/nepali-conformer-streaming](https://huggingface.co/ampixa/nepali-conformer-streaming) |
 
 **On the NepTel benchmark (constructed and maintained by us — full provenance in [`benchmark/PROVENANCE.md`](benchmark/PROVENANCE.md)), this is the strongest system we have measured:**
-ours **33.8** · Kriti 40.6 · MMS-1B 81.0 · Whisper-large-v3 99.4 (same audio, same scorer,
+ours **33.8** · Kriti 40.6 · MMS-1B 81.0 · Whisper-large-v3 96.3 (same audio, same scorer,
 per-system outputs in `benchmark/outputs/`; one gated model still pending access).
 
 †NepTel benchmark: 75 segments / 2,375 words of real Nepali call-center audio, references drafted
@@ -111,7 +111,7 @@ python streaming/hybrid_stream_server.py --nemo nepali_conformer_streaming.nemo
 
 On read Nepali speech these models are competitive (~22% WER on OpenSLR-54-style audio). On
 **real call audio** the offline model reaches **33.8% WER** — which, for calibration, beats
-Whisper-large-v3 zero-shot on the same audio by **66 points** (Whisper: ~99%, it drifts into
+Whisper-large-v3 zero-shot on the same audio by **63 points** (Whisper: ~96%, it drifts into
 Hindi orthography and hallucination loops on phone-band Nepali). The streaming variant pays a
 large, measured penalty (59.9%), which decomposes into ~4 points of context restriction and ~19
 points of training-lineage damage — details and the experiments behind that decomposition are in

@@ -18,9 +18,19 @@ reviewed against the audio by a native speaker (49/57 of the newest batch accept
 | [Kriti](https://github.com/Naamche-Labs/kriti) (Naamche Labs, 119M, IndicConformer fine-tune) | 40.59 | — | — | — | — |
 | **nepali-conformer-streaming** (ours, 520 ms) | 59.87 | 41.08 | 35.8* | 28.1* | 1.1* |
 | MMS-1B-all (Meta, `npi` adapter, zero-shot) | 81.01 | — | — | — | — |
-| Whisper-large-v3, zero-shot, anti-hallucination tuned | 99.41 | — | — | — | — |
-| Whisper-large-v3, zero-shot, defaults | 107.49 | — | — | — | — |
+| Whisper-large-v3, zero-shot, anti-hallucination tuned | 96.29 | — | — | — | — |
+| Whisper-large-v3, zero-shot, defaults† | 107.49 | — | — | — | — |
 | IndicWav2Vec-Nepali (community mirror of the AI4Bharat fine-tune) | 86.57 | — | — | — | — |
+
+*Correction note (2026-08-19): earlier revisions of this file, the README and the project site
+quoted Whisper-large-v3 at **99.4**. That figure predates the v2 reference set and does not
+reproduce from the published outputs; scoring `benchmark/outputs/whisper-large-v3-zeroshot.json`
+against the shipped references gives **96.29**, which is the number now published. The conclusion
+is unchanged — Whisper is unusable on this audio — but the reproducible figure is the one that
+belongs in the table.*
+
+†The `defaults` row has no published hypothesis file, so it cannot be re-derived from this repo;
+it is retained only as the before/after of anti-hallucination decoding, not as a citable number.
 
 *S/D/I split measured on the 26-segment first batch; full-set split reproducible from
 `benchmark/outputs/`.
