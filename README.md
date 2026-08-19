@@ -75,6 +75,18 @@ telephony codecs (AMR-NB, G.711, G.726, Opus), noise, reverb, and tempo perturba
 streaming model uses chunked-limited attention (`[[70,13],[70,6],[70,1],[70,0]]`) with fully
 causal convolutions and runs in a cache-aware incremental loop.
 
+## Benchmark your own system
+
+The audio is public and ungated at
+[`ampixa/neptel`](https://huggingface.co/datasets/ampixa/neptel) — no login, no access request:
+
+```bash
+cd benchmark && python fetch_audio.py neptel_audio
+python ../eval/score_reference.py --hyp your_outputs.json
+```
+
+We would love to be beaten — open a PR with your outputs.
+
 ## Download & run
 
 **Get the weights** (485 MB, CC-BY-NC):

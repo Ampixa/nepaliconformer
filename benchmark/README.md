@@ -12,10 +12,11 @@ Canary: `NEPTEL-CANARY-2026-8f3a1c92`
 - `references.json` — segment list with reference transcripts (CC-BY-4.0, ours) and provenance
 - `outputs/` — per-segment hypotheses for every system in RESULTS.md, so every number is
   re-derivable with `../eval/score_reference.py --hyp outputs/<system>.json`
-- `fetch_audio.py` — downloads the source audio from the canonical public dataset
-  ([InfoBayAI Nepali Call Center Dual Channel](https://huggingface.co/datasets/InfoBayAI/Nepali_Call_Center_Audio_Dataset_Dual_Channel),
-  CC-BY-4.0) and writes the segment cuts, checking each one against the duration recorded in
-  `references.json`
+- `fetch_audio.py` — downloads the ready-cut segments from
+  [`ampixa/neptel`](https://huggingface.co/datasets/ampixa/neptel), our **public, ungated**
+  mirror: no login, no access request. `--from-source` instead re-derives the cuts from the
+  vendor dataset ([InfoBayAI Nepali Call Center Dual Channel](https://huggingface.co/datasets/InfoBayAI/Nepali_Call_Center_Audio_Dataset_Dual_Channel),
+  CC-BY-4.0, gated on their side) and verifies each against the duration in `references.json`
 
 `references.json` ships all 77 segments; the 2 carrying an `excluded` field (one rate-gated,
 one flagged unintelligible in review) are skipped by the scorer, leaving the 75 scored
@@ -41,9 +42,8 @@ is sized for ±2-point deltas between systems, not for absolute-truth WERs. v0.2
 ## Run it yourself
 
 ```bash
-pip install huggingface_hub soundfile numpy
-hf auth login                       # the source dataset is gated (auto-approved)
-python fetch_audio.py neptel_audio  # writes 77 wavs, verifies every cut
+pip install huggingface_hub soundfile
+python fetch_audio.py neptel_audio  # writes 77 wavs — no login needed
 
 # reproduce any published number without touching the audio:
 python ../eval/score_reference.py --hyp outputs/nepali-conformer-offline.json
