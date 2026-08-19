@@ -18,6 +18,8 @@ export type Scene = {
   wav?: string;
   transcript?: string;
   veo?: string | null; // Gemini/Veo footage for the top viewport, if present
+  titleFrames?: number; // title card overlays the viewport for this many frames
+  typeEnd?: number; // frame at which the transcript finishes typing (defaults to durFrames - 12)
 };
 
 export type TimelineData = { scenes: Scene[] };
@@ -123,17 +125,26 @@ const ASRBox: React.FC<{
 
 // ------------------------------------------------------------- top viewports
 
-const Viewport: React.FC<{ veo?: string | null; children?: React.ReactNode }> = ({
-  veo,
-  children,
-}) => (
+const Viewport: React.FC<{
+  veo?: string | null;
+  veoFrom?: number;
+  children?: React.ReactNode;
+}> = ({ veo, veoFrom = 0, children }) => (
   <div style={{ height: "65%", position: "relative", overflow: "hidden", background: BG }}>
     {veo ? (
-      <OffthreadVideo
-        src={staticFile(veo)}
-        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        muted
-      />
+      <Sequence from={veoFrom} layout="none">
+        <OffthreadVideo
+          src={staticFile(veo)}
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+          muted
+        />
+      </Sequence>
     ) : null}
     <div style={{ position: "absolute", inset: 0 }}>{children}</div>
   </div>
@@ -284,15 +295,24 @@ const MicPrompt: React.FC<{ dur: number }> = ({ dur }) => {
   );
 };
 
-// scene 1: everyday Nepal
+// scene 1: everyday Nepal — the title card sits over the viewport while the
+// narration and live transcript are already running underneath, then fades out
 const Everyday: React.FC<{ s: Scene }> = ({ s }) => {
   const frame = useCurrentFrame();
-  const a = interpolate(frame, [8, 26], [0, 1], {
+  const tf = s.titleFrames ?? 0;
+  const a = interpolate(frame, [tf + 8, tf + 26], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
+  const titleA =
+    tf > 0
+      ? interpolate(frame, [tf - 10, tf + 4], [1, 0], {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+        })
+      : 0;
   return (
-    <Viewport veo={s.veo}>
+    <Viewport veo={s.veo} veoFrom={tf}>
       {!s.veo ? <PixelHills /> : null}
       {s.veo ? (
         <div
@@ -329,7 +349,57 @@ const Everyday: React.FC<{ s: Scene }> = ({ s }) => {
           <span style={{ fontSize: 38, color: MUTED }}>अंग्रेजी आवश्यक छैन।</span>
         </div>
       </div>
+      {titleA > 0 ? (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            opacity: titleA,
+            background: BG,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+            gap: 24,
+          }}
+        >
+          <TitleCard />
+        </div>
+      ) : null}
     </Viewport>
+  );
+};
+
+// title content shown inside the viewport while the model is already listening
+const TitleCard: React.FC = () => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const pop = spring({ frame: frame - 2, fps, config: { damping: 13 } });
+  const sub = interpolate(frame, [10, 24], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  return (
+    <>
+      <div
+        style={{
+          fontFamily: MONO,
+          fontWeight: 700,
+          fontSize: 116,
+          letterSpacing: -3,
+          color: INK,
+          transform: `scale(${pop})`,
+        }}
+      >
+        nepali<span style={{ color: CRIMSON }}>conformer</span>
+      </div>
+      <div style={{ fontFamily: MONO, fontSize: 38, color: CRIMSON, opacity: sub }}>
+        ASR MODEL FOR NEPALI
+      </div>
+      <div style={{ fontFamily: DEV, fontSize: 32, color: MUTED, opacity: sub }}>
+        नेपालको लागि बनेको स्वचालित बोली पहिचान
+      </div>
+    </>
   );
 };
 
@@ -534,7 +604,7 @@ export const Promo: React.FC<{ timeline: TimelineData }> = ({ timeline }) => {
 
 const SceneASR: React.FC<{ s: Scene }> = ({ s }) => {
   const frame = useCurrentFrame();
-  const progress = interpolate(frame, [6, s.durFrames - 12], [0, 1], {
+  const progress = interpolate(frame, [4, s.typeEnd ?? s.durFrames - 12], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });

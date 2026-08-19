@@ -1,14 +1,11 @@
 {
  "scenes": [
   {
-   "kind": "title",
-   "id": "title",
-   "durFrames": 75
-  },
-  {
    "kind": "everyday",
    "id": "s1",
-   "durFrames": 228,
+   "durFrames": 318,
+   "titleFrames": 90,
+   "typeEnd": 226,
    "wav": "vo1.wav",
    "transcript": "नेपाली कन्फर्मर नेपालको लागि बनेको स्वचालित बोली पहिचान तपाईको आमाको लागि तपाईको भाइको लागि अंग्रेजी आवश्यक छैन।",
    "veo": "veo1.mp4"
@@ -17,6 +14,7 @@
    "kind": "outro",
    "id": "s2",
    "durFrames": 222,
+   "typeEnd": 162,
    "wav": "vo4.wav",
    "transcript": "नेपाली जसरी बोलिन्छ त्यसरी नै चिन्नको लागि नेपाली कन्फर्मर अहिले नै चलाएर हेर्नुस।",
    "veo": null
