@@ -13,6 +13,7 @@ reviewed against the audio by a native speaker (49/57 of the newest batch accept
 
 | system | WER | CER | sub | del | ins |
 |---|---|---|---|---|---|
+| [**Kriti Telephony**](https://github.com/Naamche-Labs/kriti-telephony) (Naamche Labs, 119M, Kriti domain-adapted) | **32.38** | 14.36 | — | — | — |
 | **nepali-conformer-offline** (ours) | **33.81** | 16.63 | — | — | — |
 | teacher-v2 (ours, rejected lineage) | 34.69 | 17.75 | — | — | — |
 | [Kriti](https://github.com/Naamche-Labs/kriti) (Naamche Labs, 119M, IndicConformer fine-tune) | 40.59 | — | — | — | — |
@@ -35,7 +36,8 @@ it is retained only as the before/after of anti-hallucination decoding, not as a
 *S/D/I split measured on the 26-segment first batch; full-set split reproducible from
 `benchmark/outputs/`.
 
-Paired bootstrap deltas vs our offline model: Kriti **+6.8 [+3.8, +9.9]** (significant);
+Paired bootstrap deltas vs our offline model: Kriti Telephony **−1.5 [−3.7, +0.9]** (statistical
+tie, lowest point estimate); Kriti **+6.8 [+3.8, +9.9]** (significant);
 teacher-v2 **+0.9 [−0.9, +2.8]** (statistical tie); streaming **+26.1 [+23.2, +29.2]**.
 
 *Kriti row methodology: their published checkpoint reduced to Nepali-only exactly as their
