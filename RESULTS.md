@@ -11,17 +11,32 @@ paired-bootstrap 95% CIs over segments (20k resamples).
 reviewed against the audio by a native speaker (49/57 of the newest batch accepted verbatim —
 95.9% of usable segments unchanged; 8 flagged segments excluded; 2 word-level corrections).
 
-| system | WER | CER | sub | del | ins |
-|---|---|---|---|---|---|
-| [**Kriti Telephony**](https://github.com/Naamche-Labs/kriti-telephony) (Naamche Labs, 119M, Kriti domain-adapted) | **32.38** | 14.36 | — | — | — |
-| **nepali-conformer-offline** (ours) | **33.81** | 16.63 | — | — | — |
-| teacher-v2 (ours, rejected lineage) | 34.69 | 17.75 | — | — | — |
-| [Kriti](https://github.com/Naamche-Labs/kriti) (Naamche Labs, 119M, IndicConformer fine-tune) | 40.59 | — | — | — | — |
-| **nepali-conformer-streaming** (ours, 520 ms) | 59.87 | 41.08 | 35.8* | 28.1* | 1.1* |
-| MMS-1B-all (Meta, `npi` adapter, zero-shot) | 81.01 | — | — | — | — |
-| Whisper-large-v3, zero-shot, anti-hallucination tuned | 96.29 | — | — | — | — |
-| Whisper-large-v3, zero-shot, defaults† | 107.49 | — | — | — | — |
-| IndicWav2Vec-Nepali (community mirror of the AI4Bharat fine-tune) | 86.57 | — | — | — | — |
+| system | audio | WER | CER | sub | del | ins |
+|---|---|---|---|---|---|---|
+| [**Kriti Telephony**](https://github.com/Naamche-Labs/kriti-telephony) (Naamche Labs, 119M) — released checkpoint, our decode | canonical | **34.48** | — | 22.95 | 6.86 | 4.67 |
+| **nepali-conformer-offline** (ours) — re-decoded from the released weights | canonical | **36.29** | — | 23.87 | 8.21 | 4.21 |
+| teacher-v2 (ours, rejected lineage) | canonical | 34.69 | 17.75 | 22.57 | 8.97 | 3.16 |
+| [Kriti](https://github.com/Naamche-Labs/kriti) (Naamche Labs, 119M, IndicConformer fine-tune) | canonical | 40.59 | — | 24.59 | 13.81 | 2.19 |
+| **nepali-conformer-streaming** (ours, 520 ms) | canonical | 59.87 | 41.08 | 36.55 | 22.32 | 1.01 |
+| MMS-1B-all (Meta, `npi` adapter, zero-shot) | canonical | 81.01 | — | — | — | — |
+| Whisper-large-v3, zero-shot, anti-hallucination tuned | canonical | 96.29 | — | — | — | — |
+| Whisper-large-v3, zero-shot, defaults† | canonical | 107.49 | — | — | — | — |
+| IndicWav2Vec-Nepali (community mirror of the AI4Bharat fine-tune) | canonical | 86.57 | — | — | — | — |
+| *Kriti Telephony — authors' submitted outputs (PR #2), decoded on their reconstruction of the gated source audio* | reconstructed | *32.38* | *14.36* | 23.12 | 5.89 | 3.37 |
+| *nepali-conformer-offline — outputs published 2026-08, not reproducible from the released weights* | canonical | *33.81* | *16.63* | 22.86 | 7.41 | 3.54 |
+
+*Correction note (2026-09-07).* Our published `nepali-conformer-offline.json` scored 33.81 but
+does not reproduce from the released checkpoint: a fresh greedy decode of
+`ampixa/nepali-conformer-offline` on the canonical audio scores **36.29**, and only 5 of 75
+hypotheses match the published file. That file came from a training state that was never
+shipped. It is retained as `benchmark/outputs/nepali-conformer-offline.published-2026-08.unreproduced.json`
+and `benchmark/outputs/nepali-conformer-offline.json` is now the reproducible decode. Every delta
+below is against the reproducible baseline. Separately, Kriti Telephony's submitted outputs were
+produced on audio reconstructed from the gated vendor source with their own chunker (documented
+in their repository); the same released checkpoint decoded on the canonical wavs scores 34.48,
+with 2 of 77 hypotheses identical between the two runs — reconstruction drift is worth about 2
+points here. `benchmark/AUDIO_SHA256.json` now pins the canonical audio so future rows can say
+which audio they used. The two-call-mix caveat below still applies to every level in this table.
 
 *Correction note (2026-08-19): earlier revisions of this file, the README and the project site
 quoted Whisper-large-v3 at **99.4**. That figure predates the v2 reference set and does not
@@ -36,9 +51,12 @@ it is retained only as the before/after of anti-hallucination decoding, not as a
 *S/D/I split measured on the 26-segment first batch; full-set split reproducible from
 `benchmark/outputs/`.
 
-Paired bootstrap deltas vs our offline model: Kriti Telephony **−1.5 [−3.7, +0.9]** (statistical
-tie, lowest point estimate); Kriti **+6.8 [+3.8, +9.9]** (significant);
-teacher-v2 **+0.9 [−0.9, +2.8]** (statistical tie); streaming **+26.1 [+23.2, +29.2]**.
+Paired bootstrap deltas vs our **reproducible** offline decode (36.29), same canonical audio:
+Kriti Telephony **−1.8 [−3.9, +0.2]** (statistical tie, lower point estimate); Kriti
+**+4.3 [+1.7, +7.2]** (significant); teacher-v2 **−1.6 [−3.6, +0.4]** (statistical tie);
+streaming **+23.6 [+20.5, +26.8]**; our unreproduced August file **−2.5 [−4.0, −1.0]**. The
+authors' reconstructed-audio row (32.38) is not paired-comparable with any canonical-audio row:
+the segment boundaries differ, so a per-segment bootstrap between the two is not meaningful.
 
 *Kriti row methodology: their published checkpoint reduced to Nepali-only exactly as their
 own loader does (first-257 embedding rows, `ne` joint head, CTC head dropped — see their
@@ -91,7 +109,7 @@ On a held-out gold read slice (500 OpenSLR-54 utterances with human references, 
 from this checkpoint's training corpus), the released offline model scores **31.5% WER**
 (35.6% through the telephony chain). Published fine-tuned systems reach ~15% on comparable read
 data — on read speech we are mid-pack, and we say so. The point of this release is the other
-direction: from 31.5% (read) to 33.8% (real calls) our degradation is small, while systems
+direction: from 31.5% (read) to 36.3% (real calls, reproducible decode) our degradation is moderate, while systems
 optimized on read/prompted speech collapse on real calls. Read-speech WERs do not predict
 telephony performance, and until NepTel there was no public way to see that for Nepali.
 
