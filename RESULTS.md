@@ -109,7 +109,7 @@ On a held-out gold read slice (500 OpenSLR-54 utterances with human references, 
 from this checkpoint's training corpus), the released offline model scores **31.5% WER**
 (35.6% through the telephony chain). Published fine-tuned systems reach ~15% on comparable read
 data — on read speech we are mid-pack, and we say so. The point of this release is the other
-direction: from 31.5% (read) to 33.8% (real calls) our degradation is small, while systems
+direction: from 31.5% (read) to 36.3% (real calls, reproducible decode) our degradation is moderate, while systems
 optimized on read/prompted speech collapse on real calls. Read-speech WERs do not predict
 telephony performance, and until NepTel there was no public way to see that for Nepali.
 
