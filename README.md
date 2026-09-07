@@ -29,18 +29,33 @@ the hardest real-world audio there is): 75 segments / 2,375 words with human-rev
 references. Same audio, same scorer, per-system outputs in
 [`benchmark/outputs/`](benchmark/outputs/):
 
-| system | params | WER ↓ |
-|---|---|---|
-| [**Kriti Telephony**](https://github.com/Naamche-Labs/kriti-telephony) (Naamche Labs, Kriti domain-adapted) | 119 M | **32.4** |
-| **NepaliConformer offline (ours)** | 121 M | **33.8** |
-| [Kriti](https://github.com/Naamche-Labs/kriti) (Naamche Labs, IndicConformer fine-tune) | 119 M | 40.6 |
-| **NepaliConformer streaming (ours, 520 ms)** | 121 M | 59.9 |
-| [MMS-1B-all](https://huggingface.co/facebook/mms-1b-all) (Meta, `npi`, zero-shot) | 965 M | 81.0 |
-| [IndicWav2Vec-Nepali](https://huggingface.co/sumanpaudel1997/nepali-asr-indicwav2vec) (community mirror) | 94 M | 86.6 |
-| [Whisper-large-v3](https://huggingface.co/openai/whisper-large-v3) (zero-shot, anti-hallucination tuned) | 809 M | 96.3 |
+| system | params | audio | WER ↓ |
+|---|---|---|---|
+| [**Kriti Telephony**](https://github.com/Naamche-Labs/kriti-telephony) (Naamche Labs, Kriti domain-adapted) — their released checkpoint, our decode | 119 M | canonical | **34.5** |
+| **NepaliConformer offline (ours)** — re-decoded from the released weights | 121 M | canonical | **36.3** |
+| [Kriti](https://github.com/Naamche-Labs/kriti) (Naamche Labs, IndicConformer fine-tune) | 119 M | canonical | 40.6 |
+| **NepaliConformer streaming (ours, 520 ms)** | 121 M | canonical | 59.9 |
+| [MMS-1B-all](https://huggingface.co/facebook/mms-1b-all) (Meta, `npi`, zero-shot) | 965 M | canonical | 81.0 |
+| [IndicWav2Vec-Nepali](https://huggingface.co/sumanpaudel1997/nepali-asr-indicwav2vec) (community mirror) | 94 M | canonical | 86.6 |
+| [Whisper-large-v3](https://huggingface.co/openai/whisper-large-v3) (zero-shot, anti-hallucination tuned) | 809 M | canonical | 96.3 |
+| *Kriti Telephony — outputs submitted by its authors, decoded on audio they reconstructed from the gated vendor source* | 119 M | reconstructed | *32.4* |
+| *NepaliConformer offline — outputs we published in August; the released weights do not reproduce them (5/75 segments identical)* | 121 M | canonical | *33.8* |
 
-The gap over Kriti is +6.8 WER points (95% CI [+3.8, +9.9], paired bootstrap). Full tables,
-confidence intervals, methodology and every caveat — including where *we* are weak:
+**Correction (2026-09-07).** Two rows above were wrong for two different reasons, and both are
+ours to own. Our August output file scored 33.8, but a fresh decode of the released checkpoint
+scores **36.3** (5 of 75 segments identical to the published file); the 33.8 came from a
+training state that was never shipped. And NepTel's canonical audio derives from a gated vendor
+dataset, so a third party without access must reconstruct it; Kriti Telephony's submitted
+32.4 was measured on their own reconstruction, and the same released checkpoint reads **34.5**
+on the canonical wavs (2 of 77 segments identical between the two). Per-file audio hashes are
+now published in [`benchmark/AUDIO_SHA256.json`](benchmark/AUDIO_SHA256.json); a row belongs
+in the canonical column only if its audio matches them. Italic rows are kept so nothing
+previously cited disappears.
+
+On the same audio, Kriti Telephony and NepaliConformer offline are a **statistical tie**
+(−1.8 WER points for Kriti Telephony, 95% CI [−3.9, +0.2], paired bootstrap over segments), with
+Kriti Telephony holding the lower point estimate. Our gap over base Kriti is +4.3 [+1.7, +7.2].
+Full tables, confidence intervals, methodology and every caveat — including where *we* are weak:
 [RESULTS.md](RESULTS.md).
 
 ## Read speech (OpenSLR-54)
@@ -58,12 +73,12 @@ is what survives.
 
 | model | params | mode | real-call WER† | HF checkpoint |
 |---|---|---|---|---|
-| `nepali-conformer-offline` | 121.3 M | full-context | **33.8** | [ampixa/nepali-conformer-offline](https://huggingface.co/ampixa/nepali-conformer-offline) |
+| `nepali-conformer-offline` | 121.3 M | full-context | **36.3** | [ampixa/nepali-conformer-offline](https://huggingface.co/ampixa/nepali-conformer-offline) |
 | `nepali-conformer-streaming` | 121.3 M | cache-aware, 520 ms lookahead | 59.9 | [ampixa/nepali-conformer-streaming](https://huggingface.co/ampixa/nepali-conformer-streaming) |
 
-**On the NepTel benchmark (constructed and maintained by us — full provenance in [`benchmark/PROVENANCE.md`](benchmark/PROVENANCE.md)), this is the strongest system we have measured:**
-ours **33.8** · Kriti 40.6 · MMS-1B 81.0 · Whisper-large-v3 96.3 (same audio, same scorer,
-per-system outputs in `benchmark/outputs/`; one gated model still pending access).
+**On the NepTel benchmark (constructed and maintained by us — full provenance in [`benchmark/PROVENANCE.md`](benchmark/PROVENANCE.md)):**
+Kriti Telephony 34.5 · ours **36.3** (tie, see above) · Kriti 40.6 · MMS-1B 81.0 ·
+Whisper-large-v3 96.3 (same canonical audio, same scorer, per-system outputs in `benchmark/outputs/`).
 
 †NepTel benchmark: 75 segments / 2,375 words of real Nepali call-center audio, references drafted
 by Google Chirp 2 and reviewed word-by-segment by a native speaker. See `benchmark/` and
@@ -123,8 +138,9 @@ python streaming/hybrid_stream_server.py --nemo nepali_conformer_streaming.nemo
 ## The one-paragraph honest summary
 
 On read Nepali speech these models are competitive (~22% WER on OpenSLR-54-style audio). On
-**real call audio** the offline model reaches **33.8% WER** — which, for calibration, beats
-Whisper-large-v3 zero-shot on the same audio by **63 points** (Whisper: ~96%, it drifts into
+**real call audio** the released offline model reaches **36.3% WER** (an earlier published 33.8
+did not reproduce from the released weights; see the correction above) — which, for calibration,
+beats Whisper-large-v3 zero-shot on the same audio by **60 points** (Whisper: ~96%, it drifts into
 Hindi orthography and hallucination loops on phone-band Nepali). The streaming variant pays a
 large, measured penalty (59.9%), which decomposes into ~4 points of context restriction and ~19
 points of training-lineage damage — details and the experiments behind that decomposition are in

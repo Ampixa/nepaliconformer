@@ -62,6 +62,26 @@ stripped, breath tokens removed). Deltas use a paired bootstrap over segments (2
   deltas as the robust quantity.**
 - **Vendor cleaning** (above) makes this easier than raw telephony.
 
+## Audio identity (added 2026-09-07)
+
+The scored wavs are the files in [`ampixa/neptel`](https://huggingface.co/datasets/ampixa/neptel)
+at revision `cb7c4d4c574f41ec9c8dc09436c74a5be6b59d46`; their per-file SHA-256 values are in
+[`AUDIO_SHA256.json`](AUDIO_SHA256.json). Because the vendor source is gated, anyone without
+access has to reconstruct the segments, and reconstruction with a different chunker is not the
+same benchmark: the Kriti Telephony checkpoint scores 32.38 on its authors' reconstruction and
+34.48 on these wavs, with 2 of 77 hypotheses identical. Every row in the tables now states
+which audio it used, and a submission is placed in the canonical column only if its audio
+matches these hashes.
+
+## Published-output correction (2026-09-07)
+
+The `nepali-conformer-offline.json` outputs published in August (33.81) were not produced by the
+released checkpoint: re-decoding `ampixa/nepali-conformer-offline` on the canonical audio gives
+36.29, with 5 of 75 hypotheses identical to the published file. The historical file is kept
+under a `.published-2026-08.unreproduced.json` name; the reproducible decode is now the file
+the tables cite. A third party benchmarked against the unreproducible file in good faith, which
+is exactly the failure this document exists to prevent.
+
 ## Contamination protection
 
 Evaluation only — **do not train on NepTel**. Canary: `NEPTEL-CANARY-2026-8f3a1c92`.

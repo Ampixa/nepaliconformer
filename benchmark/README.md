@@ -47,7 +47,9 @@ python fetch_audio.py neptel_audio  # writes 77 wavs — no login needed
 
 # reproduce any published number without touching the audio:
 python ../eval/score_reference.py --hyp outputs/nepali-conformer-offline.json
-# -> 75 reference segments, 2375 words / WER 0.3381
+# -> 75 reference segments, 2375 words / WER 0.3629   (reproducible from the released weights;
+#    the August file that scored 0.3381 is kept as *.published-2026-08.unreproduced.json)
+sha256sum neptel_audio/*.wav   # must match AUDIO_SHA256.json before a number goes in the table
 ```
 
 ## Plug in your system
